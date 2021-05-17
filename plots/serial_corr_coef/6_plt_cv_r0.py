@@ -17,7 +17,7 @@ def plot_cv_r0():
         D = sigma*tau_n
         mus.append(mu)
 
-        data_file = home + "/Data/LIF/white/data/mu{:.2f}_tau_a0.0_tau_n{:.1f}_D{:.5f}_Delta0.0_0.txt".format(mu, tau_n, D)
+        data_file = home + "/Data/LIF/data/mu{:.2f}_tau_a0.0_tau_n{:.1f}_D{:.5f}_Delta0.0_0.txt".format(mu, tau_n, D)
 
         print(data_file)
         t_det = fc.read_t_det(data_file)
@@ -26,7 +26,6 @@ def plot_cv_r0():
         delta_t = [(x - t_det)/t_det for x in t]
         cvs.append(np.mean([t*t for t in delta_t]))
         if(tau_n == 1): tau_n = 1.01
-        delta_t_theory1 = sigma*np.exp(-t_det)*(np.exp((1.-1./tau_n)*t_det)-1)/(np.power(mu - 1, 2)*(1-1/tau_n))
 
         delta_t_theory2 = (1/np.power(mu-1, 2))*2*sigma*np.exp(-2*t_det)*((np.exp(2*t_det) -1)/(2*(1+1/tau_n)) - (np.exp((1-1/tau_n)*t_det) -1)/((1+1/tau_n)*(1-1/tau_n)))
         cvs_theory.append(delta_t_theory2/(t_det**2))

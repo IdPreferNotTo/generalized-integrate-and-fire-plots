@@ -6,6 +6,12 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from itertools import chain
 import os
 
+
+def chunks(lst, n):
+    m = int(len(lst)/n)
+    for i in range(0, len(lst), m):
+        yield lst[i:i+m]
+
 def get_gif_t_a_w_det(w0, gamma, mu, beta, tau_w, tau_a, delta):
     v = 0
     w = w0
@@ -129,6 +135,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
             delta_t = [x - t_det for x in t]
             c0 = fc.k_corr(delta_t, delta_t, 0)
             c1 = fc.k_corr(delta_t, delta_t, 1)
+
             p1s_sim.append(c1/c0)
             p1s_theory.append(fc.GIF_scc(t_det, w_det, gamma, mu, tauw, beta, taua, delta, tau_n, Dn, Dw, 1))
             tau_n_t_det.append(tau_n/t_det)

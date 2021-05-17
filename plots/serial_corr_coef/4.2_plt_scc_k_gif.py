@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 from utilites import functions as fc
-
+from scipy import integrate
+import cmath
 
 def get_gif_t_a_w_det(gamma, mu, beta, tau_w, tau_a, delta):
     v = 0
@@ -32,7 +33,7 @@ def get_gif_t_a_w_det(gamma, mu, beta, tau_w, tau_a, delta):
             t = 0
     return t_det, w_det, a
 
-def GIF_scc(t_det, w_det, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn, Dw, k):
+def GIF_scc(t_det, w_det, gamma, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn, Dw, k):
     if tau_a == 0:
         alpha = 0
         a_det = 0
@@ -43,7 +44,7 @@ def GIF_scc(t_det, w_det, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn, Dw, k)
         a_det = delta / (tau_a*(1. - alpha))
 
         def h(t):
-            return fc.gif_varprc(t, t_det, w_det, a_det, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-t / tau_a)
+            return fc.gif_varprc(t, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-t / tau_a)
 
         zi = integrate.quad(h, 0, t_det)[0]
         nu = 1. - (a_det / tau_a) * zi
@@ -68,10 +69,10 @@ def GIF_scc(t_det, w_det, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn, Dw, k)
         dt = t_det / 100
         for t1 in ts:
             for t2 in ts:
-                chi2 += gif_varprc(t1, t_det, w_det, a_det, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2, t_det, w_det, a_det,  mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t_det + t2 - t1) / tau_n) * dt * dt
-                chi1 += gif_varprc(t1, t_det, w_det, a_det, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2, t_det, w_det, a_det, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t2 - t1) / tau_n) * dt * dt
+                chi2 += fc.gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * fc.gif_varprc(t2, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t_det + t2 - t1) / tau_n) * dt * dt
+                chi1 += fc.gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * fc.gif_varprc(t2, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t2 - t1) / tau_n) * dt * dt
         for t1 in ts:
-            chi1 += (2 * tau_n * Dw / Dn) * gif_varprc(t1, t_det, a_det, mu, tau_a, delta) ** 2 * dt
+            chi1 += (2 * tau_n * Dw / Dn) * fc.gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) ** 2 * dt
 
     def pn(i):
         return beta ** (i - 1) * chi2 / chi1
@@ -120,14 +121,14 @@ def plt_scc_GIF(gamma, mu, tau_a, tau_w, tau_n, beta, Dn, Dw, delta):
 
 
 if __name__ == "__main__":
-    for i in range(5):
-        mu = 1.5
-        gamma = 1
-        betaw = 1.0 - 0.1*i
-        tauw = 1.5
+    for i in range(1):
+        mu = 1
+        gamma = -1
+        betaw = 5
+        tauw = 1.1
         taua = 1
-        delta = 9
-        taun = 0
+        delta = 2.3
+        taun = 20
         Dn = 0.1
-        Dw = 0
+        Dw = 0#0.01
         plt_scc_GIF(gamma, mu, taua, tauw, taun, betaw, Dn, Dw, delta)

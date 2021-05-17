@@ -77,6 +77,7 @@ def plt_scc_gif_theory(mus, betas, tau_w, tau_as, deltas, sigmas, Dw):
             delta_t = [x - t_mean for x in t]
             t_det = fc.read_t_det(data_file)
 
+
             for k in k_range_theory:
                 sccs_theory_sub.append(fc.GIF_scc(t_det, w_det, mu, tau_w, beta, tau_a, delta, tau_n, Dn, Dw, k))
             for k in k_range_sim:

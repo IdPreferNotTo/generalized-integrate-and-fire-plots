@@ -38,6 +38,10 @@ def gif_prc(t_det, a_det, mu, tau_w, beta, tau_a):
         prc.append(-(t - t_det) / epsilon)
     return prc
 
+def chunks(lst, n):
+    m = int(len(lst)/n)
+    for i in range(0, len(lst), m):
+        yield lst[i:i+m]
 
 def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
     home = os.path.expanduser('~')
@@ -85,12 +89,18 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
                 ck = fc.k_corr(delta_t, delta_t, k)
                 sccs_sim_sub.append(ck / c0)
 
+            delta_ts = list(chunks(delta_t, 25))
+            k_corrs_for_var = []
+            for ts in delta_ts:
+                c0 = fc.k_corr(ts, ts, 0)
+                ck = fc.k_corr(ts, ts, 1)
+                k_corrs_for_var.append(ck/c0)
+
             sccs.append(sccs_theory_sub)
             sccs_sim.append(sccs_sim_sub)
         sccs_all.append(sccs)
         sccs_sim_all.append(sccs_sim)
 
-    print(utl.adjust_plotsize(1., ratio=0.8))
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., ratio=0.8))
     x0 = 0.12  # left
     x1 = 0.1  # right
@@ -174,13 +184,11 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
             color = colormap(normalize(ratio))
             if n == 0:
                 ax.plot(k_range_theory, scc, c=color, label="theory",  lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, c=color, label="sim.",  edgecolors="k", zorder=2)
+                ax.scatter(k_range_sim, scc_sim, s=20, c=color, label="sim.",  edgecolors="k", zorder=2)
             else:
                 ax.plot(k_range_theory, scc, c=color, lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, c=color, edgecolors="k", zorder=2)
+                ax.scatter(k_range_sim, scc_sim, s=20, c=color, edgecolors="k", zorder=2)
 
-    print(sccs_all)
-    print(sccs_sim_all)
     # Add legend to last plot
     ax_scc1.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg = ax_scc1.get_legend()

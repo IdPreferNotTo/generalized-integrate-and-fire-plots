@@ -19,11 +19,11 @@ def write_script(i):
                    "#PBS -N cLIF_{0:d} \n"
                    "cd $PBS_O_WORKDIR \n"
                    "#SBATCH -o /users/nph/lukas/Report/output.out # STDOUT \n"
-                   "/users/nph/lukas/CLionProjects/sch13/cmake-build-release/SCH13 {0:d}".format(i))
+                   "/users/nph/lukas/CLionProjects/isi-correlations-phd/cmake-build-release/SCH13 {0:d}".format(i))
 
 if __name__ == "__main__":
     home = os.path.expanduser('~')
     folder = home + "/HU File system/Scripts"
     clear_folder(folder)
-    for i in range(6):
+    for i in range(40):
         write_script(i)

@@ -6,7 +6,6 @@ from utilites import plot_parameters as utl
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
-
 def lif_prc(t_det, a_det, mu, tau_a):
     dt = 10**(-5)
     epsilon = 0.01
@@ -52,6 +51,7 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
         sccs = []
         sccs_sim = []
         t_det, a_det  = fc.get_lif_t_a_det(mu, tau_a, delta)
+        print (t_det, a_det, delta/(tau_a*(1 - np.exp(-t_det/tau_a))))
         t_dets.append(t_det)
 
         print("T^*: ", t_det)
@@ -78,14 +78,12 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
                 c0 =fc.k_corr(delta_t, delta_t, 0)
                 ck =fc.k_corr(delta_t, delta_t, k)
                 sccs_sim_sub.append(ck/c0)
-
             sccs.append(sccs_theory_sub)
             sccs_sim.append(sccs_sim_sub)
         sccs_all.append(sccs)
         sccs_sim_all.append(sccs_sim)
 
     # Set up plot positions
-    print(utl.adjust_plotsize(1., ratio=0.8))
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., ratio=0.8))
     x0 = 0.12  # left
     x1 = 0.1  # right
@@ -96,8 +94,6 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
     h_spacer = 0.15
     width_cbar = 0.025
     width = (1 -x0 - w_spacer - w_spacer_cbar - width_cbar - x1)/2
-    print(width)
-    print(x0+width+width+w_spacer+w_spacer_cbar)
     height = (1 - h_spacer - y0 - y1) / 5
     ax_prc2 = f.add_axes([x0, y0 + 3*height + h_spacer, width, 2*height]) #top left
     ax_prc1 = f.add_axes([x0 + width + w_spacer, y0 + 3* height + h_spacer, width, 2*height]) # top right
@@ -153,10 +149,10 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
             color = colormap(normalize(ratio))
             if n == 0:
                 ax.plot(k_range_theory, scc, label ="theory", c = color, lw =1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, label="sim.", c = color, edgecolors="k", zorder=2)
+                ax.scatter(k_range_sim, scc_sim, s=20, label="sim.", c = color, edgecolors="k", zorder=2)
             else:
                 ax.plot(k_range_theory, scc, c=color, lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, c=color, edgecolors="k", zorder=2)
+                ax.scatter(k_range_sim, scc_sim, s=20, c=color, edgecolors="k", zorder=2)
 
     ax_scc2.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg = ax_scc2.get_legend()

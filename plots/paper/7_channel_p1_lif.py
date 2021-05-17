@@ -6,6 +6,11 @@ from utilites import plot_parameters as utl
 from utilites import functions as fc
 from shutil import copyfile
 
+def chunks(lst, n):
+    m = int(len(lst)/n)
+    for i in range(0, len(lst), m):
+        yield lst[i:i+m]
+
 
 def plot_channel_p1_lif(mus, deltas, sigma, Dws):
     print(utl.adjust_plotsize(1., 0.5))
@@ -55,24 +60,24 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
             p1s_theory = []
             data_x = []
             for tau_n in tau_ns:
-                print("tau_n:", tau_n)
                 tau_a = tau_n
                 Dn = sigma * tau_n
                 data_file = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                     mu, tau_a, delta, tau_n, Dn, D)
                 print(data_file)
-                copyfile(data_file, home + "/da" + "/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
-                    mu, tau_a, delta, tau_n, Dn, D))
                 data = np.loadtxt(data_file)
                 t, a, eta, chi = np.transpose(data)
                 t_mean = np.mean(t)
                 delta_t = [x - t_mean for x in t]
                 t_det = fc.read_t_det(data_file)
+
+                print("T:", t_det, "D:", D)
                 c0 = fc.k_corr(delta_t, delta_t, 0)
                 c1 = fc.k_corr(delta_t, delta_t, 1)
                 p1s_sim.append(c1 / c0)
                 p1s_theory.append(fc.LIF_scc(t_det, mu, tau_a, delta, tau_n, Dn, D, 1))
                 data_x.append(tau_n / t_det)
+
             p1s_sim_all.append(p1s_sim)
             p1s_theory_all.append(p1s_theory)
 
@@ -80,14 +85,14 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
             tau_a = tau_n
             data_file = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, tau_a, delta, tau_n, 0, 0.1)
-            copyfile(data_file, home + "/da" + "/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
-                mu, tau_a, delta, tau_n, 0, 0.1))
             print(data_file)
             data = np.loadtxt(data_file)
             t, a, eta, chi = np.transpose(data)
             t_mean = np.mean(t)
             delta_t = [x - t_mean for x in t]
             t_det = fc.read_t_det(data_file)
+
+            print("T:", t_det, "adap")
             c0 = fc.k_corr(delta_t, delta_t, 0)
             c1 = fc.k_corr(delta_t, delta_t, 1)
             p1s_adap_sim.append(c1 / c0)
@@ -99,19 +104,22 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
             Dn = sigma * tau_n
             data_file = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, tau_a, 0, tau_n, Dn, 0)
-            copyfile(data_file, home + "/da" + "/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
-                mu, tau_a, 0, tau_n, Dn, 0))
+            #copyfile(data_file, home + "/da" + "/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            #    mu, tau_a, 0, tau_n, Dn, 0))
             print(data_file)
             data = np.loadtxt(data_file)
             t, a, eta, chi = np.transpose(data)
             t_mean = np.mean(t)
             delta_t = [x - t_mean for x in t]
             t_det = fc.read_t_det(data_file)
+
+            print("T:", t_det, "cnoise")
             c0 = fc.k_corr(delta_t, delta_t, 0)
             c1 = fc.k_corr(delta_t, delta_t, 1)
             p1s_cnoise_sim.append(c1 / c0)
             p1s_cnoise_theory.append(fc.LIF_scc(t_det, mu, 0, 0, tau_n, Dn, 0, 1))
             data_x_cnoise.append(tau_n/t_det)
+
         if n == 0:
             for p1s_sim, p1s_theory, D in zip(p1s_sim_all, p1s_theory_all, Dws[0]):
                 ax_l.scatter(data_x, p1s_sim, ec="k", fc="w", s=10, zorder=2)

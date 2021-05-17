@@ -4,6 +4,12 @@ import os
 from utilites import functions as fc
 from utilites import plot_parameters as utl
 
+
+def chunks(lst, n):
+    m = int(len(lst)/n)
+    for i in range(0, len(lst), m):
+        yield lst[i:i+m]
+
 def plt_special_cases():
     home = os.path.expanduser("~")
     print(utl.adjust_plotsize(1., 0.5))
@@ -43,7 +49,6 @@ def plt_special_cases():
         #Dn = [0.015, 0.1][i]
         Dw = [0.001, 0.001][i]
         t_det, a_det = fc.get_lif_t_a_det(mu, tau_a, delta)
-        print(t_det)
         mu_cnoise = 1./(1.-np.exp(-t_det))
 
         data_file1 = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu, tau_a, delta, tau_n, Dn, Dw)
@@ -54,19 +59,16 @@ def plt_special_cases():
         data1 = np.loadtxt(data_file1)
         t, a, eta, chi = np.transpose(data1)
         t_mean = np.mean(t)
-        print(t_mean)
         delta_t1 = [x - t_mean for x in t]
 
         data2 = np.loadtxt(data_file2)
         t, a, eta, chi = np.transpose(data2)
         t_mean = np.mean(t)
-        print(t_mean)
         delta_t2 = [x - t_mean for x in t]
 
         data3 = np.loadtxt(data_file3)
         t, a, eta, chi = np.transpose(data3)
         t_mean_cnoise = np.mean(t)
-        print(t_mean_cnoise)
         delta_t3 = [x - t_mean_cnoise for x in t]
 
         scc_sim = []
@@ -80,6 +82,16 @@ def plt_special_cases():
         var_detla_t2 = fc.k_corr(delta_t2, delta_t2, 0)
         var_detla_t3 = fc.k_corr(delta_t3, delta_t3, 0)
 
+        sccs = []
+        delta_t1s = fc.chunks(delta_t1, 10)
+        for t1 in delta_t1s:
+            c0 = fc.k_corr(t1, t1, 0)
+            c1 = fc.k_corr(t1, t1, 1)
+            sccs.append(c1/c0)
+        scc_mean = np.mean(sccs)
+        scc_mean_err = np.std(sccs)/np.sqrt(len(sccs)-1)
+        print(scc_mean, "error:", scc_mean_err)
+
         for k in k_range:
             covar_t1 = fc.k_corr(delta_t1, delta_t1, k)
             covar_t2 = fc.k_corr(delta_t2, delta_t2, k)
@@ -87,15 +99,14 @@ def plt_special_cases():
             scc_sim.append(covar_t1 / var_delta_t1)
             scc_adap_sim.append(covar_t2/var_detla_t2)
             scc_cnoise_sim.append(covar_t3 / var_detla_t3)
-            print("--------------")
+
             scc_theory.append(fc.LIF_scc(t_det, mu, tau_a, delta, tau_n, Dn, Dw, k))
-            print("--------------")
             scc_adap_theory.append(fc.LIF_scc(t_det, mu, tau_a, delta, 0, 0, Dw, k))
             scc_cnoise_theory.append(fc.LIF_scc(t_det, mu_cnoise, 0, 0, tau_n, Dn, Dw, k))
 
-        ax.scatter(k_range, scc_sim,  label="sim.", ec="k", fc = "w", zorder=2)
-        ax.scatter(k_range, scc_adap_sim, ec="k", fc="C0",  zorder=2)
-        ax.scatter(k_range, scc_cnoise_sim, ec="k", fc="C1", zorder=2)
+        ax.scatter(k_range, scc_sim,  label="sim.", ec="k", s=20, fc = "w", zorder=2)
+        ax.scatter(k_range, scc_adap_sim, ec="C0", fc="w",  s=20, zorder=2)
+        ax.scatter(k_range, scc_cnoise_sim, ec="C1", fc="w", s=20, zorder=2)
         ax.plot(k_range, scc_theory, label="theory", c="k", ls="-", lw=1, zorder=1)
         ax.plot(k_range, scc_adap_theory, ls="-", lw=1, zorder=1)
         ax.plot(k_range, scc_cnoise_theory, ls="-", lw=1, zorder=1)

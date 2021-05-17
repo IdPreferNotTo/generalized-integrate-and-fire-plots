@@ -91,9 +91,9 @@ def plt_scc_gif_theory(gamma, mu, tau_a, delta, beta, tau_w, D, ratio):
     # Use this to emphasize the discrete color values
     cbar = f.colorbar(s_map, cax=cax, format='%.2f')
     cbar.set_ticks(colorparams)
-    cbar.ax.set_ylabel(r"$\tau_\eta \times 1$")
-    cbar.ax.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(tau)/np.log(10)) for tau in tau_ns])
-    cbar.ax.yaxis.set_label_position("left")
+    cbar.ax1.set_ylabel(r"$\tau_\eta \times 1$")
+    cbar.ax1.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(tau) / np.log(10)) for tau in tau_ns])
+    cbar.ax1.yaxis.set_label_position("left")
 
     cax_cv = cax.twinx()
     cax_cv.set_ylim(0, 3)

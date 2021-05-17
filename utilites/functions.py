@@ -55,6 +55,12 @@ def get_gif_t_a_w_det(gamma, mu, beta, tau_w, tau_a, delta):
     return t_det, w_det, a
 
 
+def chunks(lst, n):
+    m = int(len(lst)/n)
+    for i in range(0, len(lst), m):
+        yield lst[i:i+m]
+
+
 def estimate_scc_error(lst, k, n):
     values = []
     m = int(len(lst) / n)
@@ -101,6 +107,11 @@ def read_a_det(data_file):
 
 def k_corr(data1, data2, k):
     # Get two arbitrary data set and calculate their correlation with lag k.
+    mean_d1 = np.mean(data1)
+    mean_d2 = np.mean(data2)
+    data1 = [x - mean_d1 for x in data1]
+    data2 = [x - mean_d2 for x in data2]
+
     k_corr = 0
     if k == 0:
         for x, y in zip(data1, data2):
@@ -166,11 +177,14 @@ def LIF_scc(t_det, mu, tau_a, delta, tau_n, Dn, Dw, k):
         alpha = np.exp(-t_det / tau_a)
         beta = np.exp(-t_det / tau_n) if tau_n != 0 else 0
         a_det = delta / (tau_a * (1 - alpha))
-        def h(t): return lif_varprc(t, t_det, a_det, mu, tau_a, delta) * np.exp(-t / tau_a)
+        def h(t):
+            return lif_varprc(t, t_det, a_det, mu, tau_a, delta) * np.exp(-t / tau_a)
+
         zi = integrate.quad(h, 0, t_det)[0]
         nu = 1. - (a_det / tau_a) * zi
 
-        def a(i): return alpha * (1 - alpha * alpha * nu) * (1 - nu) * np.real(cmath.exp((i - 1) * cmath.log(alpha * nu)))
+        def a(i):
+            return alpha * (1 - alpha * alpha * nu) * (1 - nu) * np.real(cmath.exp((i - 1) * cmath.log(alpha * nu)))
         c = 1 + alpha ** 2 - 2 * alpha ** 2 * nu
         def pa(i): return -a(i) / c
 
@@ -239,10 +253,13 @@ def GIF_scc(t_det, w_det, gamma, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn,
         dt = t_det / 100
         for t1 in ts:
             for t2 in ts:
-                chi2 += gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t_det + t2 - t1) / tau_n) * dt * dt
-                chi1 += gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t2 - t1) / tau_n) * dt * dt
+                Zt1 = gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif)
+                Zt2 = gif_varprc(t2, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif)
+                chi2 += Zt1 * Zt2 * np.exp(-abs(t_det + t2 - t1) / tau_n) * dt * dt
+                chi1 += Zt1 * Zt2 * np.exp(-abs(t2 - t1) / tau_n) * dt * dt
         for t1 in ts:
-            chi1 += (2 * tau_n * Dw / Dn) * gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) ** 2 * dt
+            Zt1 = gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif)
+            chi1 += (2 * tau_n * Dw / Dn) * Zt1 ** 2 * dt
 
     def pn(i):
         return beta ** (i - 1) * chi2 / chi1
@@ -255,3 +272,30 @@ def GIF_scc(t_det, w_det, gamma, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn,
     factor1 = (A / (alpha * nu - beta) + B) / C
     factor2 = (D / C) * (alpha - beta) / (alpha * nu - beta)
     return factor1 * pa(k) + factor2 * pn(k)
+
+
+def coefficient_variation(t_det, w_det, gamma, mu, tau_gif, beta_gif, tau_a, delta, tau_n, Dn, Dw):
+    alpha = np.exp(-t_det / tau_a)
+    a_det = delta / (tau_a * (1. - alpha))
+
+    def h(t):
+        return gif_varprc(t, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-t / tau_a)
+
+    zi = integrate.quad(h, 0, t_det)[0]
+    nu = 1. - (a_det / tau_a) * zi
+    beta = np.exp(-t_det / tau_n)
+    h1h2 = 0
+    h1h1 = 0
+    x1x1 = 0
+    ts = np.linspace(0, t_det, 100)
+    dt = t_det / 100
+    for t1 in ts:
+        for t2 in ts:
+            h1h2 += gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2, t_det,w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t_det + t2 - t1) / tau_n) * dt * dt
+            h1h1 += gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * gif_varprc(t2,t_det,w_det,a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) * np.exp(-abs(t2 - t1) / tau_n) * dt * dt
+    for t1 in ts:
+        x1x1 += gif_varprc(t1, t_det, w_det, a_det, gamma, mu, tau_a, delta, tau_gif, beta_gif) ** 2 * dt
+
+    p1 = (1/t_det**2) * (1 + alpha ** 2 - 2*nu*(alpha**2))/(1 - (alpha*nu)**2)
+    p2 = (2/t_det**2) * alpha*(1-nu)*(1-nu*(alpha**2))/((1 - (alpha*nu)**2)*(1-alpha*nu*beta))
+    return p1 * ((Dn/tau_n) * h1h1 + 2*Dw*x1x1) - p2 * (Dn/tau_n) * h1h2
