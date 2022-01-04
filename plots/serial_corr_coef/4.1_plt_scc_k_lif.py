@@ -87,7 +87,7 @@ def plt_scc_lif(taua, taun, mu, delta, Dn, Dw):
     ax.set_xlabel("$k$", fontsize=utl.fontsize)
     ax.legend()
     plt.tight_layout()
-    plt.savefig(home + "/Data/LIF/plots/scc_full_mu{:.1f}_taua{:.1f}_taun{:.1f}_delta{:.1f}_Dw{:.2f}_Dn{:.2f}.pdf".format(mu, tau_a, tau_n, delta, Dw, Dn))
+    #plt.savefig(home + "/Data/LIF/plots/scc_full_mu{:.1f}_taua{:.1f}_taun{:.1f}_delta{:.1f}_Dw{:.2f}_Dn{:.2f}.pdf".format(mu, tau_a, tau_n, delta, Dw, Dn))
     plt.show()
 
 if __name__ == "__main__":

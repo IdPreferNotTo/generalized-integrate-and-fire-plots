@@ -113,8 +113,8 @@ def calculate_qif_timeseries(beta, tau_a, delta):
 
 def plt_qif_model(tau_a, tau_n, mu, delta, D):
     home = os.path.expanduser('~')
-    data_file = home + "/Data/QIF/data/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}_ratio{:.2f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
-    data_full = home + "/Data/QIF/data_full/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}_ratio{:.2f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_file = home + "/Data/QIF/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_full = home + "/Data/QIF/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
     print(utl.adjust_plotsize(1.))
     # Get Data:
     vt, at, a_det, t_det = calculate_qif_timeseries(mu, tau_a, delta)
@@ -143,10 +143,10 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
         ax.tick_params(direction='in', labelsize=utl.labelsize)
 
     # set axis labels
-    ax_vt.text(-1.6, 1.1, "(a)", size=10, weight = 'heavy', transform=ax_pp.transAxes)
-    ax_pp.text(-0.2, 1.1, "(b)", size=10, weight = 'heavy', transform=ax_pp.transAxes)
-    ax_prc.text(-1.6, 1.1, "(c)", size=10, weight = 'heavy', transform=ax_scc.transAxes)
-    ax_scc.text(-0.2, 1.1, "(d)", size=10, weight = 'heavy', transform=ax_scc.transAxes)
+    ax_vt.text(-1.6, 1.1, "A", size=12, transform=ax_pp.transAxes)
+    ax_pp.text(-0.2, 1.1, "B", size=12, transform=ax_pp.transAxes)
+    ax_prc.text(-1.6, 1.1, "C", size=12, transform=ax_scc.transAxes)
+    ax_scc.text(-0.2, 1.1, "D", size=12, transform=ax_scc.transAxes)
 
     # ax_ul: Plot phase response curve
     ax_prc.plot(np.linspace(0, t_det, 100), prc, lw=1, c="k")
@@ -277,7 +277,7 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
     ax_pp.set_yticklabels(["$a^*$"])
     ax_pp.set_ylabel("$a$", fontsize=utl.fontsize)
 
-    plt.savefig(home + "/Data/Plots_paper/2_model_qif.pdf".format(mu, tau_a, tau_n, delta, D), transparent=True)
+    plt.savefig(home + "/Data/Plots/fig2.pdf", transparent=True)
     plt.show()
 
     return 1

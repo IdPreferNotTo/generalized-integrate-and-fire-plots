@@ -48,77 +48,85 @@ def multiline(xs, ys, c, ax=None, **kwargs):
 
 if __name__ == "__main__":
     home = os.path.expanduser("~")
-    data = np.loadtxt(home + "/CLionProjects/PhD/taub_miles_adap/out/taubs_miles_adap.dat")
-    v, a, n, m, h, t = np.transpose(data)
+    data = np.loadtxt(home + "/CLionProjects/PhD/taub_miles_adap/out/taubs_miles_adap_cnoise_I0.0_Dv0.10_Dn1.00.dat")
+    v, a, eta, n, m, h, Ia, t = np.transpose(data)
 
 
     fig = plt.figure(tight_layout=True, figsize=utl.adjust_plotsize(1., 0.5))
-    gs = gs.GridSpec(3, 2)
-    ax1 = fig.add_subplot(gs[0:1, 0])
-    ax2 = fig.add_subplot(gs[1:3, 0])
+    gs = gs.GridSpec(5, 2)
+    ax1 = fig.add_subplot(gs[0:2, 0])
+    ax2 = fig.add_subplot(gs[2:5, 0])
     ax3 = fig.add_subplot(gs[:, 1])
 
     ax1.text(-0.2, 1.5, "(a)", size=10, weight = 'heavy', transform=ax1.transAxes)
     ax3.text(-0.2, 1.1, "(b)", size=10, weight = 'heavy', transform=ax3.transAxes)
 
-    #axins = inset_axes(ax, width="50%", height="40%", loc=4)
-    ax1.set_ylabel("$z$")
-    ax1.plot(t, a, lw=1, c="k")
-    ax1.set_xticklabels([])
-
+    # I = 10.
     ISI = 10.1715
-    tau_a = 1/0.01
-    a_fix = 0.0452
+    tau_a = 1 / 0.01
+    z_fix = 0.0452
     g = 5
     deltaV = 33
-    Ia_fix = g * deltaV * 0.0452
+    a_fix = g * deltaV * z_fix
     Delta = tau_a * a_fix * (1. - np.exp(-ISI / tau_a))
 
-    ts = np.linspace(0, 11, 1000)
-    adaps = [a_fix*np.exp(-(t)/tau_a) for t in ts]
-    #ax1.plot(ts, adaps)
-    ax1.axhline(a_fix, ls=":", c="k")
-    #ax1.axhline(a_fix - Delta/tau_a, ls=":", c="k")
-    ax1.set_xlim([0, 100])
-    ax1.set_ylim([0, a_fix*1.4])
+    # I = 5.
+    ISI = 18.98
+    tau_a = 100
+    z_fix = 0.0254
+    g = 5
+    deltaV = 33
+    a_fix = g * deltaV * z_fix
+    Delta = tau_a * a_fix * (1. - np.exp(-ISI / tau_a))
+    print(a_fix)
+
+    ax1.plot(t, a, lw=1, c="k")
+    ax1.axhline(z_fix, ls=":", c="k")
+
+    ax1.set_xlim([0, 110])
+    ax1.set_xticklabels([])
+    ax1.set_ylabel("$z$")
+    ax1.set_ylim([0, z_fix * 1.6])
+    ax1.set_yticks([0, z_fix])
+    ax1.set_yticklabels([0, "$z^*$"])
     ax1.grid(which='major', alpha=0.8, linestyle="--")
     ax1.tick_params(which="both", direction='in', labelsize=utl.labelsize)
-    ax1.set_yticks([0, a_fix])
-    ax1.set_yticklabels([0, "$z^*$"])
 
-    ax2.set_ylabel("$V$ \ mV")
-    ax2.set_xlabel("$t$ \ ms")
+    # inset axes....
+    axins = ax1.inset_axes([0.05, 0.3, 0.4, 0.6])
+    axins.plot(t, a, lw=1, c="k")
+    # sub region of the original image
+    x1, x2, y1, y2 = 83, 101, 0.016, 0.024
+    axins.set_xlim(x1, x2)
+    axins.set_ylim(y1, y2)
+    axins.set_xticks([])
+    axins.set_yticks([])
+    ax1.indicate_inset_zoom(axins, edgecolor="k", alpha=1.)
+
     ax2.plot(t, v, lw=1, c="k")
-    ax2.plot([0, 50, 50, 200], [-99, -99, -80, -80], c="C3")
-    ax2.set_xlim([0, 100])
-    ax2.grid(which='major', alpha=0.8, linestyle="--")
-    ax2.tick_params(which="both", direction='in', labelsize=utl.labelsize)
+    ax2.plot([0, 25, 25, 200], [-99, -99, -80, -80], c="C3")
+
+    ax2.set_ylabel("$V$ [mV]")
     ax2.set_ylim([-100, 60])
     ax2.set_yticks([-100, -50, 0, 50])
+    ax2.set_xlabel("$t$ [ms]")
+    ax2.set_xlim([0, 110])
+    ax2.grid(which='major', alpha=0.8, linestyle="--")
+    ax2.tick_params(which="both", direction='in', labelsize=utl.labelsize)
 
-    data = np.loadtxt(home + "/CLionProjects/PhD/taub_miles_adap/out/taubs_miles_adap_det.dat")
-    v_det, a_det, h_det, m_det, n_det, t_det = np.transpose(data)
-    dv_det = []
-    for v1, v2 in zip(v_det[:-2], v_det[2:]):
-        dv_det.append(abs(v2 - v1)*100)
 
-    v_plot = []
-    a_plot = []
-    c_plot = []
-    for v1, a1, v2, a2, c in zip(v_det[50000:51000], a_det[50000:51000], v_det[50001:51001], a_det[50001:51001], dv_det[50000:51000]):
-        v_plot.append([v1, v2])
-        a_plot.append([a1, a2])
-        c_plot.append(c)
+    data = np.loadtxt(home + "/CLionProjects/PhD/taub_miles_adap/out/taubs_miles_adap_cnoise_I0.0_Dv0.00_Dn0.00.dat")
+    v_det, a_det, eta_det, n, m, h, Ia_det, t_det = np.transpose(data)
+    v_det_plot = v_det[900000:920000]
+    a_det_plot = a_det[900000:920000]
+    ax3.plot(v_det_plot, a_det_plot, ls="--", c="k")
 
-    ax3.plot(v_plot, a_plot, ls="--", c="k")
-    data = np.loadtxt(home + "/CLionProjects/PhD/taub_miles_adap/out/taubs_miles_adap_cnoise.dat")
-    v, a, eta, Ia, t = np.transpose(data)
-    ax3.plot(v[530000:550000], a[530000:550000], c="C0")
-    #lc = multiline(v_plot, a_plot, c_plot, cmap="viridis", ax=ax3, norm=matplotlib.colors.LogNorm())
-    #axcb = fig.colorbar(lc)
+    v_plot = v[850000:870000]
+    a_plot = a[850000:870000]
+    ax3.plot(v_plot, a_plot, c="C0")
     ax3.grid(which='major', alpha=0.8, linestyle="--")
     ax3.tick_params(which="both", direction='in', labelsize=utl.labelsize)
-    ax3.set_xlabel("$V$ \ mV")
+    ax3.set_xlabel("$V$ [mV]")
     ax3.set_ylabel("$z$")
 
     plt.savefig(home + "/Data/Taub_miles/Plots/traub_miles_transient_and_limit_cycle.pdf")

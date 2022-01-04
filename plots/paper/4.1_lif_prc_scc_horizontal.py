@@ -62,7 +62,7 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
         for t_ratio in t_ratios:
             tau_n = t_ratio*t_det
             Dn = sigma*tau_n
-            data_file = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, tau_a, delta, tau_n, Dn, Dw)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -105,8 +105,8 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
     axis_prc = [ax_prc1, ax_prc2]
 
     # Set up plot layout
-    ax_prc2.text(-0.2, 1.2, "(a)", size=10, weight = 'heavy', transform=ax_prc2.transAxes)
-    ax_prc1.text(-0.2, 1.2, "(b)", size=10, weight = 'heavy', transform=ax_prc1.transAxes)
+    ax_prc2.text(-0.2, 1.2, "A", size=12, transform=ax_prc2.transAxes)
+    ax_prc1.text(-0.2, 1.2, "B", size=12, transform=ax_prc1.transAxes)
     ax_prc2.set_title(r"$\nu < 0$", size=utl.fontsize)
     ax_prc1.set_title(r"$\nu > 0$", size=utl.fontsize)
 
@@ -121,7 +121,7 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
         ax.set_ylim(-0.9, 0.9)
         ax.set_xlabel("$k$", fontsize=utl.fontsize)
         ax.set_yticks([-0.8, -0.4, 0, 0.4, 0.8])
-        ax.axhline(0, xmin=0, xmax=6, ls = "--", c="C7", zorder=1)
+        ax.axhline(0, xmin=0, xmax=6, ls = "--", color="C7", zorder=1)
     ax_scc1.set_yticklabels([])
     for ax, t_det in zip(axis_prc, t_dets):
         ax.set_xticks([0, t_det/2 , t_det])
@@ -139,7 +139,7 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
 
     # Plot PRCs
     for t_det, prc, ax in zip(t_dets, prcs, axis_prc):
-        ax.plot(np.linspace(0, t_det, 100), prc, lw=1, c="k")
+        ax.plot(np.linspace(0, t_det, 100), prc, lw=1, color="k")
         ax.set_xlim([0, t_det])
         ax.fill_between(np.linspace(0, t_det, 100), prc, 0, facecolor="C0", alpha=0.5, zorder=2)
 
@@ -148,11 +148,11 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
         for n, (scc, scc_sim, ratio) in enumerate(zip(sccs, sccs_sim, t_ratios)):
             color = colormap(normalize(ratio))
             if n == 0:
-                ax.plot(k_range_theory, scc, label ="theory", c = color, lw =1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, s=20, label="sim.", c = color, edgecolors="k", zorder=2)
+                ax.plot(k_range_theory, scc, label ="theory", c = color, lw = 1., zorder=1)
+                ax.scatter(k_range_sim, scc_sim, s=15, label="sim.", color = color, edgecolors="k", lw = 1, zorder=2)
             else:
-                ax.plot(k_range_theory, scc, c=color, lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, s=20, c=color, edgecolors="k", zorder=2)
+                ax.plot(k_range_theory, scc, color=color, lw=1, zorder=1)
+                ax.scatter(k_range_sim, scc_sim, s=15, color = color, edgecolors="k", lw = 1, zorder=2)
 
     ax_scc2.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg = ax_scc2.get_legend()
@@ -170,7 +170,7 @@ def plt_scc_lif_theory(mus, tau_a, delta_as, sigma, Dw):
     ax_cbar.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(exp)/np.log(10)) for exp in t_ratios])
 
     #ax.legend()
-    #plt.savefig(home + "/Data/Plots_paper/4_lif_sccs_horizontal.pdf".format(Dn), transparent=True)
+    plt.savefig(home + "/Data/Plots/fig4.pdf", transparent=True)
     plt.show()
 
 if __name__ == "__main__":

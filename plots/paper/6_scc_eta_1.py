@@ -109,8 +109,8 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
 
     axins_prc_l.set_yticks([-1, 0, 1])
     axins_prc_r.set_yticks([-0.2, 0, 0.2])
-    ax_l.text(-0.2, 1.1, "(a)", size=10, weight = 'heavy', transform=ax_l.transAxes)
-    ax_r.text(-0.2, 1.1, "(b)", size=10, weight = 'heavy', transform=ax_r.transAxes)
+    ax_l.text(-0.2, 1.1, "A", size=12, transform=ax_l.transAxes)
+    ax_r.text(-0.2, 1.1, "B", size=12, transform=ax_r.transAxes)
 
     for gamma, mu, beta, tauw, taua, delta, sigma, w_reset, axs in zip(gammas, mus, betas, tauws, tauas, deltas, sigmas, w_resets, axis):
         p1s_sim = []
@@ -126,7 +126,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
             print("tau_n:", tau_n)
             Dn = sigma * tau_n
             home = os.path.expanduser('~')
-            data_file = home + "/Data/GIF/data/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, beta, tauw, taua, delta, tau_n, Dn, Dw)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -159,7 +159,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         Dn = sigma * tau_n_inset
         scc_theory = []
         scc_sim = []
-        data_file = home + "/Data/GIF/data/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+        data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
             mu, beta, tauw, taua, delta, tau_n_inset, Dn, Dw)
         data = np.loadtxt(data_file)
         t, a, eta, chi = np.transpose(data)
@@ -193,7 +193,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         #axins_scc.patch.set_alpha(1.0)
         #axins_prc.patch.set_alpha(1.0)
 
-    plt.savefig(home + "/Data/Plots_paper/6_gif_p1_negative_prc.pdf".format(Dn))
+    plt.savefig(home + "/Data/Plots/fig6.pdf")
     plt.show()
 
     return 1

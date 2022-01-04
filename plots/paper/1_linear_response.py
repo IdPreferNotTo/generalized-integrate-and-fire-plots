@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from utilites import plot_parameters as utl
-from utilites import functions as fc
 import numpy as np
 import matplotlib.patches as mpatches
 import os
@@ -67,6 +66,7 @@ def calculate_qif_timeseries(beta, tau_a, delta):
     osc += 1
     return vt, at, a, t
 
+
 def illustration():
     print(utl.adjust_plotsize(1., 0.5))
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., 0.5))
@@ -97,7 +97,7 @@ def illustration():
 
 
     home = os.path.expanduser("~")
-    data_full = home + "/Data/QIF/data_full/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}_ratio{:.2f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_full = home + "/Data/QIF/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
     vt, at, a_det, t_det = calculate_qif_timeseries(mu, tau_a, delta)
     prc = qif_prc(t_det, a_det, mu, tau_a)
     max_prc = max(prc)
@@ -156,7 +156,7 @@ def illustration():
     plt.plot((0,0), (0, 0.75),c="k")
     plt.plot((t_det,t_det), (0, 0.75), ls="--", c="k")
     plt.plot((t_det - t_det/4, t_det - t_det/4), (0, 0.75), c="k")
-    plt.savefig(home + "/Data/Plots_paper/1_lin_resp.pdf", transparent = True)
+    plt.savefig(home + "/Data/Plots/fig1.pdf", transparent = True)
 
     plt.show()
     return 1

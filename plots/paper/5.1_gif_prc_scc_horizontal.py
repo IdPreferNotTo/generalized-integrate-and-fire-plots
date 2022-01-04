@@ -73,7 +73,7 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
             Dn = sigma * tau_n
             sccs_theory_sub = []
             sccs_sim_sub = []
-            data_file = home + "/Data/GIF/data/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, beta, tauw, taua, delta, tau_n, Dn, Dw)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -127,9 +127,9 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
     axis_cbar = [ax_cbar1]
 
     # Set up plot layout
-    ax_prc1.text(-0.2, 1.2, "(a)", size=10, weight='heavy', transform=ax_prc1.transAxes)
-    ax_prc2.text(-0.2, 1.2, "(b)", size=10, weight='heavy', transform=ax_prc2.transAxes)
-    ax_prc3.text(-0.2, 1.2, "(c)", size=10, weight='heavy', transform=ax_prc3.transAxes)
+    ax_prc1.text(-0.2, 1.2, "A", size=12, transform=ax_prc1.transAxes)
+    ax_prc2.text(-0.2, 1.2, "B", size=12, transform=ax_prc2.transAxes)
+    ax_prc3.text(-0.2, 1.2, "C", size=12, transform=ax_prc3.transAxes)
     #ax_prc1.set_ylim(-1., 6.)
     ax_prc2.set_ylim(-0.15, 1.15)
     #ax_prc1.set_yticks([0, 0.1])
@@ -169,7 +169,7 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
 
     # Plot PRCs
     for t_det, prc, ax in zip(t_dets, prcs, axis_prc):
-        ax.plot(np.linspace(0, t_det, 100), prc, lw=1, c="k")
+        ax.plot(np.linspace(0, t_det, 100), prc, lw=1, color="k")
         ax.set_xlim([0, t_det])
         prc_neg = [x for x in prc if x < 0]
         prc_pos = [x for x in prc if x >= 0]
@@ -183,11 +183,11 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
         for n, (scc, scc_sim, ratio) in enumerate(zip(sccs, sccs_sim, t_ratios)):
             color = colormap(normalize(ratio))
             if n == 0:
-                ax.plot(k_range_theory, scc, c=color, label="theory",  lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, s=20, c=color, label="sim.",  edgecolors="k", zorder=2)
+                ax.plot(k_range_theory, scc, color=color, label="theory",  lw=1, zorder=1)
+                ax.scatter(k_range_sim, scc_sim, s=15, color=color, label="sim.",  edgecolors="k", lw = 1, zorder=2)
             else:
-                ax.plot(k_range_theory, scc, c=color, lw=1, zorder=1)
-                ax.scatter(k_range_sim, scc_sim, s=20, c=color, edgecolors="k", zorder=2)
+                ax.plot(k_range_theory, scc, color=color, lw=1, zorder=1)
+                ax.scatter(k_range_sim, scc_sim, s=15, color=color, edgecolors="k", lw = 1, zorder=2)
 
     # Add legend to last plot
     ax_scc1.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
@@ -206,7 +206,7 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
     ax_cbar1.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(exp)/np.log(10)) for exp in t_ratio_range])
 
 
-    plt.savefig(home + "/Data/Plots_paper/5_gif_sccs_horizontals.pdf".format(Dn), transparent=True)
+    plt.savefig(home + "/Data/Plots/fig5.pdf".format(Dn), transparent=True)
     plt.show()
 
 

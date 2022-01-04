@@ -51,9 +51,9 @@ def plt_special_cases():
         t_det, a_det = fc.get_lif_t_a_det(mu, tau_a, delta)
         mu_cnoise = 1./(1.-np.exp(-t_det))
 
-        data_file1 = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu, tau_a, delta, tau_n, Dn, Dw)
-        data_file2 = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu, tau_a, delta, 0, 0, Dw)
-        data_file3 = home + "/Data/LIF/data/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu_cnoise, tau_a, 0, tau_n, Dn, Dw)
+        data_file1 = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu, tau_a, delta, tau_n, Dn, Dw)
+        data_file2 = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu, tau_a, delta, 0, 0, Dw)
+        data_file3 = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(mu_cnoise, tau_a, 0, tau_n, Dn, Dw)
 
         print(data_file1, data_file2, data_file3)
         data1 = np.loadtxt(data_file1)
@@ -111,14 +111,14 @@ def plt_special_cases():
         ax.plot(k_range, scc_adap_theory, ls="-", lw=1, zorder=1)
         ax.plot(k_range, scc_cnoise_theory, ls="-", lw=1, zorder=1)
         ax.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-    ax_l.text(-0.2, 1.1, "(a)", size=10, weight = 'heavy', transform=ax_l.transAxes)
-    ax_r.text(-0.2, 1.1, "(b)", size=10, weight = 'heavy', transform=ax_r.transAxes)
-    ax_l.text(1.6, -0.28, r"$\rho_{k,a}$", ha="center", fontsize=utl.fontsize, c="C0")
-    ax_l.text(3.5, 0.05, r"$\rho_{k,\eta}$", ha="center", fontsize=utl.fontsize, c="C1")
+    ax_l.text(-0.2, 1.1, "A", size=12, transform=ax_l.transAxes)
+    ax_r.text(-0.2, 1.1, "B", size=12, transform=ax_r.transAxes)
+    ax_l.text(1.6, -0.25, r"$\rho_{k,a}$", ha="center", fontsize=utl.fontsize, c="C0")
+    ax_l.text(3.5, 0.08, r"$\rho_{k,\eta}$", ha="center", fontsize=utl.fontsize, c="C1")
     ax_r.text(3.5, -0.2, r"$\rho_{k,a}$", ha="center", fontsize=utl.fontsize, c="C0")
     ax_r.text(4.5, 0.65, r"$\rho_{k,\eta}$", ha="center", fontsize=utl.fontsize, c="C1")
     ax_l.legend(prop={"size": 7}, framealpha=1., edgecolor="k")
-    plt.savefig(home + "/Data/Plots_paper/3_scc_interplay.pdf", transparent=True)
+    plt.savefig(home + "/Data/Plots/fig3.pdf", transparent=True)
     plt.show()
 
 
