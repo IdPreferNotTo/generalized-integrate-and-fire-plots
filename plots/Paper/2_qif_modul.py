@@ -2,8 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import cmath
+
+import styles
 from utilites import plot_parameters as utl
 from utilites import functions as fc
+import styles as st
 
 def adap_cnoise_QIF_scc(t_det, prc, tau_a, tau_n, delta, k):
     alpha = np.exp(-t_det / tau_a)
@@ -113,8 +116,8 @@ def calculate_qif_timeseries(beta, tau_a, delta):
 
 def plt_qif_model(tau_a, tau_n, mu, delta, D):
     home = os.path.expanduser('~')
-    data_file = home + "/Data/QIF/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
-    data_full = home + "/Data/QIF/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_file = home + "/Data/integrate_and_fire/quadratic_if/mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_full = home + "/Data/integrate_and_fire/quadratic_if/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
     print(utl.adjust_plotsize(1.))
     # Get Data:
     vt, at, a_det, t_det = calculate_qif_timeseries(mu, tau_a, delta)
@@ -122,6 +125,8 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
     print(t_det)
     print(utl.adjust_plotsize(1.))
     # Set up figure
+    st.set_default_plot_style()
+    colors = st.Colors()
     f = plt.figure(1, figsize=utl.adjust_plotsize(1.))
     x0 = 0.11
     y0 = 0.12
@@ -151,12 +156,12 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
     # ax_ul: Plot phase response curve
     ax_prc.plot(np.linspace(0, t_det, 100), prc, lw=1, c="k")
     ax_prc.set_xticks([0, t_det/2, t_det])
-    ax_prc.set_xticklabels([0, 1/2, 1], fontsize=utl.fontsize)
-    ax_prc.set_xlabel(r"$\tau/T^*$", fontsize=utl.fontsize)
-    ax_prc.set_ylabel(r"$Z(\tau)$", fontsize=utl.fontsize)
+    ax_prc.set_xticklabels([0, 1/2, 1], fontsize=11)
+    ax_prc.set_xlabel(r"$\tau/T^*$", fontsize=11)
+    ax_prc.set_ylabel(r"$Z(\tau)$", fontsize=11)
     ax_prc.set_xlim([0, t_det])
     ax_prc.set_ylim(0, max(prc)*1.2)
-    ax_prc.fill_between(np.linspace(0, t_det, 100), prc, 0, facecolor="C0", alpha=0.5, zorder=2)
+    ax_prc.fill_between(np.linspace(0, t_det, 100), prc, 0, facecolor=colors.palette[1], alpha=0.5, zorder=2)
 
     # ax_scc: Plot serial correlation coefficients.
     # For adaptation, colored noise and a combination of both
@@ -231,9 +236,9 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
             xlabels.append("$t_{{i+{:d}}}$".format(s-s0))
     for s in range(s0, s0+spikes):
         if s  == s0:
-            ax_vt.text((ti[s] + ti[s+1]) / 2, 2.9, "$T_{{i}}$", clip_on = False, ha="center", fontsize=utl.fontsize)
+            ax_vt.text((ti[s] + ti[s+1]) / 2, 2.9, "$T_{{i}}$", clip_on = False, ha="center", fontsize=11)
         else:
-            ax_vt.text((ti[s] + ti[s+1])/2, 2.9, "$T_{{i+{:d}}}$".format(s-s0), ha="center", clip_on = False, fontsize=utl.fontsize)
+            ax_vt.text((ti[s] + ti[s+1])/2, 2.9, "$T_{{i+{:d}}}$".format(s-s0), ha="center", clip_on = False, fontsize=11)
         #axis[0].plot([ti[s], ti[s+1]], [1.5, 1.5], c = "k")
         ax_vt.arrow(ti[s], 2.5 , ti[s+1] - ti[s], 0, length_includes_head=True, head_width=0.5, head_length=0.0, lw =0.5, clip_on = False)
     ax_vt.arrow(ti[s0], 2.5, 0.001 , 0, length_includes_head=True, head_width=0.5, head_length=0.0, lw=0.5, clip_on = False)
@@ -242,42 +247,42 @@ def plt_qif_model(tau_a, tau_n, mu, delta, D):
     ax_vt.set_yticks([-np.pi/2, np.pi/2])
     ax_vt.set_yticklabels([r"$\theta_R$", r"$\theta_T$"])
     ax_vt.set_xticklabels([])
-    ax_vt.plot(t_plt, [np.arctan(v) for v in v_plt], zorder=2, lw = 1)
-    ax_vt.set_ylabel(r"$\theta$", fontsize=utl.fontsize)
+    ax_vt.plot(t_plt, [np.arctan(v) for v in v_plt], zorder=2, lw = 1, c=colors.palette[1])
+    ax_vt.set_ylabel(r"$\theta$", fontsize=11)
 
-    ax_at.plot(t_plt, a_plt, zorder=2, c="C0", lw = 1)
+    ax_at.plot(t_plt, a_plt, zorder=2, c=colors.palette[3], lw = 1)
     ax_at.set_ylim([min(a_plt)*0.8, a_det*1.2])
     ax_at.set_yticks([a_det])
     ax_at.set_yticklabels(["$a^*$"])
     ax_at.set_xticklabels([])
-    ax_at.set_ylabel("$a$", fontsize=utl.fontsize)
-    ax_at.text(ti[s0 + 1], a_det, r"$a_i$", ha="center", fontsize=utl.fontsize)
-    ax_at.text(ti[s0 + 2], a_det, r"$a_{i+1}$", ha="center", fontsize=utl.fontsize)
+    ax_at.set_ylabel("$a$", fontsize=11)
+    ax_at.text(ti[s0 + 1], a_det, r"$a_i$", ha="center", fontsize=11)
+    ax_at.text(ti[s0 + 2], a_det, r"$a_{i+1}$", ha="center", fontsize=11)
 
-    ax_nt.plot(t_plt, eta_plt, zorder=2, c="C3", lw = 0.5)
+    ax_nt.plot(t_plt, eta_plt, zorder=2, c=colors.palette[5], lw = 0.5)
     ax_nt.set_yticks([0])
-    ax_nt.set_ylabel(r"$\eta$", fontsize=utl.fontsize)
+    ax_nt.set_ylabel(r"$\eta$", fontsize=11)
     ax_nt.set_xticklabels(xlabels)
     ax_nt.set_xlabel("$t$")
     ymax = abs(min(eta_plt)) if abs(min(eta_plt)) > abs(max(eta_plt)) else abs(max(eta_plt))
     ax_nt.set_ylim([-ymax, ymax])
 
     # axis_pp: Plot phase portrait
-    ax_pp.plot([np.arctan(v) for v in v_plt_pp], a_plt_pp, lw=1)
+    ax_pp.plot([np.arctan(v) for v in v_plt_pp], a_plt_pp, lw=1, c=colors.palette[1])
     ax_pp.plot([np.arctan(v) for v in vt], at, ls="--", lw=1, c="k")
-    ax_pp.text(0, a_det*1.05, "reset", ha="center", fontsize=utl.fontsize)
-    ax_pp.text(np.pi/2*1.15, (a_det+min(at))*0.9/2, "jump", ha="center", fontsize=utl.fontsize, rotation=-90)
+    ax_pp.text(0, a_det*1.05, "reset", ha="center", fontsize=11)
+    ax_pp.text(np.pi/2*1.15, (a_det+min(at))*0.9/2, "jump", ha="center", fontsize=11, rotation=-90)
     ax_pp.set_xlim([-np.pi/2*1.2, np.pi/2*1.4])
     ax_pp.set_xticks([-np.pi/2, 0 , np.pi/2])
     ax_pp.set_xticklabels([r"$\theta_R$", "$0$",r"$\theta_T$"])
-    ax_pp.set_xlabel(r"$\theta$", fontsize=utl.fontsize)
+    ax_pp.set_xlabel(r"$\theta$", fontsize=11)
     da = 0.2*a_det
     ax_pp.set_ylim([min(a_plt_pp)-da, a_det + da])
     ax_pp.set_yticks([a_det])
     ax_pp.set_yticklabels(["$a^*$"])
-    ax_pp.set_ylabel("$a$", fontsize=utl.fontsize)
+    ax_pp.set_ylabel("$a$", fontsize=11)
 
-    plt.savefig(home + "/Data/Plots/fig2.pdf", transparent=True)
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig2.png", dpi=300)
     plt.show()
 
     return 1

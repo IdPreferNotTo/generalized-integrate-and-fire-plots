@@ -6,6 +6,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from itertools import chain
 import os
 
+import styles as st
 
 def chunks(lst, n):
     m = int(len(lst)/n)
@@ -56,6 +57,8 @@ def gif_prc_theory(t_det, a_det, w_det, gamma, mu, tau_w, beta, tau_a, delta):
 def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
     home = os.path.expanduser('~')
     print(utl.adjust_plotsize(1., 0.5))
+    st.set_default_plot_style()
+    colors = st.Colors
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., 0.5))
     x0 = 0.12
     x1 = 0.05
@@ -88,8 +91,8 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         ax.set_ylim([-0.7, 1])
         ax.set_yticks([-0.5, 0, 0.5, 1])
         ax.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-        ax.set_xlabel(r"$\tau_\eta/T^*$", fontsize=utl.fontsize)
-    ax_l.set_ylabel(r"$\rho_{1}$", fontsize=utl.fontsize)
+        ax.set_xlabel(r"$\tau_\eta/T^*$", fontsize=11)
+    ax_l.set_ylabel(r"$\rho_{1}$", fontsize=11)
     for ax in [axins_prc_l, axins_prc_r, axins_scc_l, axins_scc_r]:
         ax.grid(which='major', alpha=0.8, linestyle="--")
         ax.tick_params(which="both", direction='in', labelsize=utl.labelsize-2)
@@ -101,11 +104,11 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
     for axins_scc in [axins_scc_r, axins_scc_l]:
         axins_scc.set_xticks([1,5])
         axins_scc.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-        axins_scc.set_title(r"$\rho_{k}$", fontsize=utl.fontsize-1, rotation = "horizontal")
-        axins_scc.set_xlabel(r"$k$", fontsize=utl.fontsize-1)
+        axins_scc.set_title(r"$\rho_{k}$", fontsize=11-1, rotation = "horizontal")
+        #axins_scc.set_xlabel(r"$k$", fontsize=11-1)
     for axins_prc in [axins_prc_r, axins_prc_l]:
-        axins_prc.set_title(r"$Z(\tau)$", fontsize=utl.fontsize - 1, rotation = "horizontal")
-        axins_prc.set_xlabel(r"$\tau/T^*$", fontsize=utl.fontsize - 1)
+        axins_prc.set_title(r"$Z(\tau)$", fontsize=11 - 1, rotation = "horizontal")
+        #axins_prc.set_xlabel(r"$\tau/T^*$", fontsize=11 - 1)
 
     axins_prc_l.set_yticks([-1, 0, 1])
     axins_prc_r.set_yticks([-0.2, 0, 0.2])
@@ -126,7 +129,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
             print("tau_n:", tau_n)
             Dn = sigma * tau_n
             home = os.path.expanduser('~')
-            data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/integrate_and_fire/generalized_if/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, beta, tauw, taua, delta, tau_n, Dn, Dw)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -159,7 +162,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         Dn = sigma * tau_n_inset
         scc_theory = []
         scc_sim = []
-        data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+        data_file = home + "/Data/integrate_and_fire/generalized_if/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
             mu, beta, tauw, taua, delta, tau_n_inset, Dn, Dw)
         data = np.loadtxt(data_file)
         t, a, eta, chi = np.transpose(data)
@@ -182,8 +185,8 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         axins_prc.set_xticks([0, t_det])
         axins_prc.set_xticklabels([0, 1])
         #axins_prc.set_yticks([0, 0.4])
-        axins_prc.fill_between(np.linspace(0, t0, t0_step), prc_neg, 0, facecolor="C3", alpha=0.5, zorder=2)
-        axins_prc.fill_between(np.linspace(t0, t_det, 100 - t0_step), prc_pos, 0, facecolor="C0", alpha=0.5, zorder=2)
+        axins_prc.fill_between(np.linspace(0, t0, t0_step), prc_neg, 0, facecolor=colors.palette[5], alpha=0.5, zorder=2)
+        axins_prc.fill_between(np.linspace(t0, t_det, 100 - t0_step), prc_pos, 0, facecolor=colors.palette[1], alpha=0.5, zorder=2)
 
         ax.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
         ax.plot(tau_n_t_det, p1s_theory, c="k", lw=1, zorder=1)
@@ -193,7 +196,7 @@ def scc_eta_1(gammas, mus, betas, tauws, tauas, deltas, sigmas, Dw, w_resets):
         #axins_scc.patch.set_alpha(1.0)
         #axins_prc.patch.set_alpha(1.0)
 
-    plt.savefig(home + "/Data/Plots/fig6.pdf")
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig6.png", dpi=300)
     plt.show()
 
     return 1

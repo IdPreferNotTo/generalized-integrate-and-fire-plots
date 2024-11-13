@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gs
 import os
 from utilites import plot_parameters as utl
-import styles as st
+from matplotlib.collections import LineCollection
 
+import styles as st
 
 def k_corr(data1, data2, k):
     # Get two arbitrary data set and calculate their correlation with lag k.
@@ -25,7 +26,7 @@ def k_corr(data1, data2, k):
 
 if __name__ == "__main__":
     home = os.path.expanduser("~")
-    data = np.loadtxt(home + "/Data/Taub_miles/PRC_cnoise_I5.0.dat")
+    data = np.loadtxt(home + "/Data/conductance_based/traub_miles/PRC_cnoise_I5.0.dat")
     taus, PRCs = np.transpose(data)
 
     # I = 10.
@@ -52,43 +53,52 @@ if __name__ == "__main__":
     tau_n = 10
 
     st.set_default_plot_style()
+    colors = st.Colors
     fig = plt.figure(tight_layout=True, figsize=utl.adjust_plotsize(1., 0.5))
     gs = gs.GridSpec(2, 2)
     ax11 = fig.add_subplot(gs[0, 0:1])
     ax12 = fig.add_subplot(gs[1, 0:1])
     ax2 = fig.add_subplot(gs[:, 1:2])
-    st.remove_top_right_axis([ax11, ax12, ax2])
 
-    ax11.set_ylabel(r"$Z(\tau)$", fontsize=utl.fontsize)
+    ax11.text(-0.2, 1.2, "A", size=12, transform=ax11.transAxes)
+    ax2.text(-0.2, 1.1, "B", size=12, transform=ax2.transAxes)
+
+    ax11.grid(which='major', alpha=0.8, linestyle="--")
+    ax11.tick_params(which="both", direction='in', labelsize=utl.labelsize)
+    ax11.set_ylabel(r"$Z(\tau)$", fontsize=11)
     ax11.set_xticks([0, 0.5 * ISI, ISI])
     ax11.set_xticklabels([])
     ax11.plot(taus, PRCs, c="k")
-    ax11.fill_between(taus, PRCs, 0, facecolor=st.colors[1], alpha=0.4, zorder=2)
+    ax11.fill_between(taus, PRCs, 0, facecolor=colors.palette[1], alpha=0.5, zorder=2)
     ax11.set_xlim([0, ISI])
     # ax11.set_ylim([0, 0.5])
 
-    data = np.loadtxt(home + "/Data/Taub_miles/taubs_miles_adap_cnoiseI5.0_t20.00_e0.10.dat")
+    data = np.loadtxt(home + "/Data/conductance_based/traub_miles/taubs_miles_adap_cnoiseI5.0_t20.00_e0.10.dat")
     v, a, eta, n, m, h, Ia, t = np.transpose(data)
 
-    ax12.plot(t, v, c="k")
-    ax12.set_xlabel(r"$\tau / T^*$ ", fontsize=utl.fontsize)
-    ax12.set_ylabel(r"$V$ [mV]", fontsize=utl.fontsize)
+    ax12.plot(t, v, colors.palette[1])
+    ax12.grid(which='major', alpha=0.8, linestyle="--")
+    ax12.tick_params(which="both", direction='in', labelsize=utl.labelsize)
+    ax12.set_xlabel(r"$\tau / T^*$ ", fontsize=11)
+    ax12.set_ylabel(r"$V$ [mV]", fontsize=11)
     ax12.set_xlim([0, ISI])
     ax12.set_xticks([0, 0.5 * ISI, ISI])
     ax12.set_xticklabels([0, 0.5, 1])
     ax12.set_ylim([-100, 60])
     ax12.set_yticks([-100, -50, 0, 50])
 
-    ax2.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
-    ax2.set_xlabel("$k$", fontsize=utl.fontsize)
+    ax2.grid(which='major', alpha=0.8, linestyle="--")
+    ax2.set_ylabel(r"$\rho_k$", fontsize=11)
+    ax2.set_xlabel("$k$", fontsize=11)
+    ax2.tick_params(which="both", direction='in', labelsize=utl.labelsize)
     ax2.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-    ISIs_adap = np.loadtxt(home + "/Data/Taub_miles/spikes_taubs_miles_adap_cnoise_I5.0_Dv0.10_Dn0.00.dat")
+    ISIs_adap = np.loadtxt(home + "/Data/conductance_based/traub_miles/spikes_taubs_miles_adap_cnoise_I5.0_Dv0.10_Dn0.00.dat")
     ISIs_adap = ISIs_adap[100:]
 
-    ISIs_cnoise = np.loadtxt(home + "/Data/Taub_miles/spikes_taubs_miles_cnoise_I1.4_Dv0.10_Dn1.00.dat")
+    ISIs_cnoise = np.loadtxt(home + "/Data/conductance_based/traub_miles/spikes_taubs_miles_cnoise_I1.4_Dv0.10_Dn1.00.dat")
     ISIs_cnoise = ISIs_cnoise[100:]
 
-    ISIs_adap_cnoise = np.loadtxt(home + "/Data/Taub_miles/spikes_taubs_miles_adap_cnoise_I5.0_Dv0.10_Dn1.00.dat")
+    ISIs_adap_cnoise = np.loadtxt(home + "/Data/conductance_based/traub_miles/spikes_taubs_miles_adap_cnoise_I5.0_Dv0.10_Dn1.00.dat")
     ISIs_adap_cnoise = ISIs_adap_cnoise[100:]
 
     ks = np.arange(1, 8)
@@ -112,7 +122,7 @@ if __name__ == "__main__":
         corr = k_corr(ISIs_adap_cnoise, ISIs_adap_cnoise, k)
         k_correlatins_adap_cnoise.append(corr / std)
 
-    data = np.loadtxt(home + "/Data/Taub_miles/PRC_I5.0.dat")
+    data = np.loadtxt(home + "/Data/conductance_based/traub_miles/PRC_I5.0.dat")
 
     alpha = np.exp(-ISI / tau_a)
     beta = np.exp(-ISI / tau_n)
@@ -152,17 +162,17 @@ if __name__ == "__main__":
     for rho_a, rho_n in zip(rhos_a, rhos_n):
         rhos.append(A / C * rho_a + B / C * rho_n)
 
-    ax2.scatter(ks, k_correlatins_adap, ec=st.colors[2], s=20, fc="w", linewidths=1, zorder=5)
-    ax2.scatter(ks, k_correlatins_cnoise, ec=st.colors[4], s=20, fc="w", linewidths=1, zorder=5)
+    ax2.scatter(ks, k_correlatins_adap, ec=colors.palette[3], s=20, fc="w", linewidths=1, zorder=5)
+    ax2.scatter(ks, k_correlatins_cnoise, ec=colors.palette[5], s=20, fc="w", linewidths=1, zorder=5)
     ax2.scatter(ks, k_correlatins_adap_cnoise, ec="k", s=20, fc="w", linewidths=1, zorder=5, label="sim.")
-    ax2.plot(ks, rhos_a, c=st.colors[2])
-    ax2.plot(ks, rhos_n, c=st.colors[4])
+    ax2.plot(ks, rhos_a, c=colors.palette[3])
+    ax2.plot(ks, rhos_n, c=colors.palette[5])
     ax2.plot(ks, rhos, c="k", label="theory")
-    ax2.text(2.5, -0.20, r"$\rho_{k,a}$", ha="center", fontsize=15, c=st.colors[2])
-    ax2.text(3.0, 0.10, r"$\rho_{k,\eta}$", ha="center", fontsize=15, c=st.colors[4])
+    ax2.text(2.5, -0.20, r"$\rho_{k,a}$", ha="center", fontsize=11, c=colors.palette[3])
+    ax2.text(3.0, 0.10, r"$\rho_{k,\eta}$", ha="center", fontsize=11, c=colors.palette[5])
 
     ax2.set_xticks([2, 4, 6])
     ax2.set_ylim([-0.3, 0.3])
-    ax2.legend(fancybox=False, prop={"size": 7}, framealpha=1., edgecolor="k")
-    plt.savefig(home + "/Desktop/Presentations/SCC SfB/fig7.png", dpi=300)
+    ax2.legend(fancybox=False, prop={"size": 11}, framealpha=1., edgecolor="k")
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig11.png", dpi=300)
     plt.show()

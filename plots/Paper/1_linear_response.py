@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.patches as mpatches
 import os
 
+import styles as st
+
 def qif_prc(t_det, a_det, mu, tau_a):
     dt = 10**(-5)
     epsilon = 0.01
@@ -23,6 +25,7 @@ def qif_prc(t_det, a_det, mu, tau_a):
             t += dt
         prc.append(-(t - t_det)/epsilon)
     return prc
+
 
 def calculate_qif_timeseries(beta, tau_a, delta):
     vt = []
@@ -68,7 +71,8 @@ def calculate_qif_timeseries(beta, tau_a, delta):
 
 
 def illustration():
-    print(utl.adjust_plotsize(1., 0.5))
+    colors = st.Colors()
+    st.set_default_plot_style()
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., 0.5))
     x0 = 0.05
     x1 = 0.05
@@ -97,7 +101,7 @@ def illustration():
 
 
     home = os.path.expanduser("~")
-    data_full = home + "/Data/QIF/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
+    data_full = home + "/Data/integrate_and_fire/quadratic_if/time_series_mu{:.2f}_tau_a{:.1f}_tau_n{:.2f}_D{:.5e}_Delta{:.1f}.txt".format(mu, tau_a, tau_n, D, delta, 0)
     vt, at, a_det, t_det = calculate_qif_timeseries(mu, tau_a, delta)
     prc = qif_prc(t_det, a_det, mu, tau_a)
     max_prc = max(prc)
@@ -120,43 +124,44 @@ def illustration():
     eta_plt  = [x/eta_max for x in eta_shifted]
 
 
-    ax_1.plot(t_plt, eta_plt, zorder=2, c="C3", lw=0.7)
+    ax_1.plot(t_plt, eta_plt, zorder=2, c=colors.palette[5], lw=0.7)
     ax_1.set_xticks([min(t_plt),  max(t_plt)])
     ax_1.set_ylim(-0.7, 1.6) #eta is between -1, 1.
-    ax_1.text((min(t_plt) + max(t_plt))/2, 1.3, r"$u(t_i + \tau)$", ha="center", fontsize=utl.fontsize, clip_on=False, zorder=3)
-    ax_1.set_xticklabels(["$t_i$","$t_i + T^*$"], fontsize=utl.fontsize, zorder=4)
-    ax_1.set_title("Perturbation", fontsize=utl.fontsize)
-    ax_1.arrow(max(t_plt)+0.4, 0.5, 0.8, 0, clip_on=False, head_width=0.2, head_length=0.5, lw=1.0, fc="k")
+    #ax_1.set_title("Voltage perturbation \n" + r"$u(t_i + \tau)$", fontsize=11)
+    ax_1.text(0.5, 1.0, "Voltage perturbation", ha="center", transform = ax_1.transAxes)
+    ax_1.text(0.5, 0.8, r"$u(t_i + \tau)$", ha="center", transform = ax_1.transAxes)
+    ax_1.set_xticklabels(["$t_i$","$t_i + T^*$"], fontsize=11, zorder=4)
+    #ax_1.arrow(max(t_plt)+0.4, 0.5, 0.8, 0, clip_on=False, head_width=0.2, head_length=0.5, lw=1.0, fc="k")
 
 
     n = int(len(eta_plt)/len(prc))
     conv = []
     for i in range(len(prc)):
         conv.append(2*prc[i]*eta_plt[n*i])
-    ax_2.plot(np.linspace(0, t_det, 100), prc,  lw=1, c="C0")
+    ax_2.plot(np.linspace(0, t_det, 100), prc,  lw=1, c=colors.palette[1])
     ax_2.set_xticks([0,  t_det])
-    ax_2.set_xticklabels(["$t_i$","$t_i + T^*$"], fontsize=utl.fontsize)
-    ax_2.set_title("Neuron", fontsize=utl.fontsize)
-    ax_2.text(t_det/2, 1.3, r"$Z(\tau)u(t_i + \tau)$", ha="center", fontsize=utl.fontsize, clip_on=False)
-    #ax_2.set_xlim([0-t_det/10, t_det+t_det/10])
-    ax_2.plot(np.linspace(0, t_det, 100), conv, lw=1, c="C3")
-    ax_2.fill_between(np.linspace(0, t_det, 100), prc, 0, facecolor="C0", alpha=0.5, zorder=2)
-    ellipse = mpatches.Ellipse((t_det/2 + 0.2, 0.2), t_det*1.5, 2, color='k', fc="C7", alpha = 0.5, clip_on=False)
-    ax_2.add_artist(ellipse)
-    ax_2.arrow(t_det + 0.5, 0.5, 1, 0, clip_on=False, head_width=0.2, head_length=0.5, lw =1.0, fc="k")
+    ax_2.set_xticklabels(["$t_i$","$t_i + T^*$"], fontsize=11)
+    ax_2.text(0.5, 1.0, "Phase perturbation", ha="center", transform=ax_2.transAxes)
+    ax_2.text(0.5, 0.8, r"$Z(\tau)u(t_i + \tau)$", ha="center", transform=ax_2.transAxes)
+    ax_2.plot(np.linspace(0, t_det, 100), conv, lw=1, c=colors.palette[5], zorder=3)
+    ax_2.fill_between(np.linspace(0, t_det, 100), prc, 0, facecolor=colors.palette[1], alpha=0.5, zorder=1)
+    #ellipse = mpatches.Ellipse((t_det/2 + 0.2, 0.2), t_det*1.5, 2, color='k', fc="C7", alpha = 0.5, clip_on=False)
+    #ax_2.add_artist(ellipse)
+    #ax_2.arrow(t_det + 0.5, 0.5, 1, 0, clip_on=False, head_width=0.2, head_length=0.5, lw =1.0, fc="k")
 
-    ax_3.set_title("Spike timing", fontsize=utl.fontsize)
+
     ax_3.set_xticks([0, t_det - t_det/4, t_det])
-    ax_3.set_xticklabels(["$t_i$", "$t_{i+1}$", "$\quad t_i + T^*$"], fontsize=utl.fontsize)
+    ax_3.set_xticklabels(["$t_i$", "$t_{i+1}$", "$\quad t_i + T^*$"], fontsize=11)
     ax_3.set_xlim(0 -t_det/10, t_det +t_det/10)
-    ax_3.arrow(t_det, 0.7, -(t_det/4), 0, length_includes_head=True, head_width=0.1, head_length=0.5, lw =1.0, ec="C3", fc="C3")
-    ax_3.text(t_det - t_det/8, 0.9, "$\delta T_{i+1}$", ha="center", fontsize=utl.fontsize, clip_on=False)
-    ax_3.text(t_det/2, 1.3, r"$\int_0^{T^*} d\tau\, Z(\tau)u(t_i + \tau)$", ha="center", fontsize=utl.fontsize, clip_on=False, zorder=3)
+    ax_3.arrow(t_det, 0.7, -(t_det/4), 0, length_includes_head=True, head_width=0.1, head_length=0.5, lw =1.0, ec=colors.palette[5], fc=colors.palette[5])
+    ax_3.text(0.5, 1.0, "Spike timing", ha="center", transform=ax_3.transAxes)
+    ax_3.text(0.5, 0.8, r"$\int_0^{T^*} d\tau\, Z(\tau)u(t_i + \tau)$", ha="center", transform=ax_3.transAxes)
+    ax_3.text(t_det - t_det/8, 0.9, "$\delta T_{i+1}$", ha="center", fontsize=11, clip_on=False)
 
     plt.plot((0,0), (0, 0.75),c="k")
     plt.plot((t_det,t_det), (0, 0.75), ls="--", c="k")
     plt.plot((t_det - t_det/4, t_det - t_det/4), (0, 0.75), c="k")
-    plt.savefig(home + "/Data/Plots/fig1.pdf", transparent = True)
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig1.pdf", dpi=300)
 
     plt.show()
     return 1

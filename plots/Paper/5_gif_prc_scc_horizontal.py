@@ -6,6 +6,7 @@ from utilites import plot_parameters as utl
 import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
+import styles as st
 
 def gif_prc_theory(t_det, a_det, w_det, gamma, mu, tau_w, beta, tau_a, delta):
     prc = []
@@ -73,7 +74,7 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
             Dn = sigma * tau_n
             sccs_theory_sub = []
             sccs_sim_sub = []
-            data_file = home + "/Data/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/integrate_and_fire/generalized_if/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, beta, tauw, taua, delta, tau_n, Dn, Dw)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -101,6 +102,8 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
         sccs_all.append(sccs)
         sccs_sim_all.append(sccs_sim)
 
+    st.set_default_plot_style()
+    colors = st.Colors
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., ratio=0.8))
     x0 = 0.12  # left
     x1 = 0.1  # right
@@ -127,9 +130,12 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
     axis_cbar = [ax_cbar1]
 
     # Set up plot layout
-    ax_prc1.text(-0.2, 1.2, "A", size=12, transform=ax_prc1.transAxes)
-    ax_prc2.text(-0.2, 1.2, "B", size=12, transform=ax_prc2.transAxes)
-    ax_prc3.text(-0.2, 1.2, "C", size=12, transform=ax_prc3.transAxes)
+    ax_prc1.text(-0.1, 1.1, "A$_i$", size=12, transform=ax_prc1.transAxes, ha="center", va="center")
+    ax_prc2.text(-0.1, 1.1, "B$_i$", size=12, transform=ax_prc2.transAxes, ha="center", va="center")
+    ax_prc3.text(-0.1, 1.1, "C$_i$", size=12, transform=ax_prc3.transAxes, ha="center", va="center")
+    ax_scc1.text(-0.1, 1.1, "A$_{ii}$", size=12, transform=ax_scc1.transAxes, ha="center", va="center")
+    ax_scc2.text(-0.1, 1.1, "B$_{ii}$", size=12, transform=ax_scc2.transAxes, ha="center", va="center")
+    ax_scc3.text(-0.1, 1.1, "C$_{ii}$", size=12, transform=ax_scc3.transAxes, ha="center", va="center")
     #ax_prc1.set_ylim(-1., 6.)
     ax_prc2.set_ylim(-0.15, 1.15)
     #ax_prc1.set_yticks([0, 0.1])
@@ -143,19 +149,19 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
             ax.tick_params(direction='in', labelsize=utl.labelsize)
     for ax in axis_scc:
         ax.set_xticks(k_range_sim)
-        ax.set_xlabel("$k$", fontsize=utl.fontsize)
+        ax.set_xlabel("$k$", fontsize=11)
         ax.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
     for ax, t_det in zip(axis_prc, t_dets):
         ax.set_xticks([0, t_det / 2, t_det])
         ax.set_xticklabels([0, 0.5, 1])
     for ax in axis_prc:
-        ax.set_xlabel(r"$\tau/T^*$", fontsize=utl.fontsize)
-    ax_prc1.set_ylabel(r"$Z(\tau)$", fontsize=utl.fontsize)
-    ax_scc1.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
+        ax.set_xlabel(r"$\tau/T^*$", fontsize=11)
+    ax_prc1.set_ylabel(r"$Z(\tau)$", fontsize=11)
+    ax_scc1.set_ylabel(r"$\rho_k$", fontsize=11)
 
-    ax_prc1.set_title(r"$\nu < 0$", size=utl.fontsize)
-    ax_prc2.set_title(r"$ 0 < \nu < 1$", size=utl.fontsize)
-    ax_prc3.set_title(r"$\nu > 1$", size=utl.fontsize)
+    ax_prc1.set_title(r"$\nu < 0$", size=11)
+    ax_prc2.set_title(r"$ 0 < \nu < 1$", size=11)
+    ax_prc3.set_title(r"$\nu > 1$", size=11)
 
     ax_scc1.set_ylim([-0.7, 0.7])
     ax_scc2.set_ylim([-0.7, 0.7])
@@ -175,8 +181,8 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
         prc_pos = [x for x in prc if x >= 0]
         t0_step = len(prc_neg)
         t0 = t0_step/100*t_det
-        ax.fill_between(np.linspace(0, t0, t0_step), prc_neg, 0, facecolor="C3", alpha=0.5, zorder=2)
-        ax.fill_between(np.linspace(t0, t_det, 100-t0_step), prc_pos, 0, facecolor="C0", alpha=0.5, zorder=2)
+        ax.fill_between(np.linspace(0, t0, t0_step), prc_neg, 0, facecolor=colors.palette[5], alpha=0.5, zorder=2)
+        ax.fill_between(np.linspace(t0, t_det, 100-t0_step), prc_pos, 0, facecolor=colors.palette[1], alpha=0.5, zorder=2)
 
     # Plot SCCs
     for (sccs, sccs_sim, ax, t_ratios) in zip(sccs_all, sccs_sim_all, axis_scc, t_ratioss):
@@ -190,7 +196,7 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
                 ax.scatter(k_range_sim, scc_sim, s=15, color=color, edgecolors="k", lw = 1, zorder=2)
 
     # Add legend to last plot
-    ax_scc1.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
+    ax_scc1.legend(fancybox=False, prop={"size": 9}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg = ax_scc1.get_legend()
     leg.get_frame().set_linewidth(0.5)
     leg.legendHandles[0].set_color('k')
@@ -200,13 +206,13 @@ def plt_scc_gif_theory(gammas, mus, betas, tauws, deltas, tauas, sigmas, Dw):
     s_map = cm.ScalarMappable(norm=normalize, cmap=colormap)
     s_map.set_array(colorparams)
 
-    ax_cbar1.set_title(r"$\tau_\eta/T^*$", fontsize=utl.fontsize)
+    ax_cbar1.set_title(r"$\tau_\eta/T^*$", fontsize=11)
     cbar1 = f.colorbar(s_map, cax=ax_cbar1, format='%.2f')
     cbar1.set_ticks(colorparams)
     ax_cbar1.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(exp)/np.log(10)) for exp in t_ratio_range])
 
 
-    plt.savefig(home + "/Data/Plots/fig5.pdf".format(Dn), transparent=True)
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig5.png", dpi=300)
     plt.show()
 
 

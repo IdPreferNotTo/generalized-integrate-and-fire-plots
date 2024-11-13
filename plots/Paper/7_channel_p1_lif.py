@@ -5,7 +5,7 @@ import os
 from utilites import plot_parameters as utl
 from utilites import functions as fc
 
-
+import styles as st
 def chunks(lst, n):
     m = int(len(lst) / n)
     for i in range(0, len(lst), m):
@@ -14,6 +14,8 @@ def chunks(lst, n):
 
 def plot_channel_p1_lif(mus, deltas, sigma, Dws):
     print(utl.adjust_plotsize(1., 0.5))
+    st.set_default_plot_style()
+    colors = st.Colors
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., 0.5))
     x0 = 0.12
     x1 = 0.05
@@ -36,9 +38,9 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
         ax.set_ylim([-0.7, 1])
         ax.set_yticks([-0.5, 0, 0.5, 1])
         ax.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-    ax_l.set_ylabel(r"$\rho_1$", fontsize=utl.fontsize)
-    ax_l.set_xlabel(r"$\tau_c/T^*$", fontsize=utl.fontsize)
-    ax_r.set_xlabel(r"$\tau_c/T^*$", fontsize=utl.fontsize)
+    ax_l.set_ylabel(r"$\rho_1$", fontsize=11)
+    ax_l.set_xlabel(r"$\tau_c/T^*$", fontsize=11)
+    ax_r.set_xlabel(r"$\tau_c/T^*$", fontsize=11)
     ax_l.set_title("weak adaptation")
     ax_r.set_title("strong adaptation")
 
@@ -62,7 +64,7 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
             for tau_n in tau_ns:
                 tau_a = tau_n
                 Dn = sigma * tau_n
-                data_file = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+                data_file = home + "/Data/integrate_and_fire/leaky_if/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                     mu, tau_a, delta, tau_n, Dn, D)
                 print(data_file)
                 data = np.loadtxt(data_file)
@@ -83,7 +85,7 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
 
         for tau_n in tau_ns:
             tau_a = tau_n
-            data_file = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/integrate_and_fire/leaky_if/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, tau_a, delta, tau_n, 0, 0.1)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -102,7 +104,7 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
 
             tau_a = tau_n
             Dn = sigma * tau_n
-            data_file = home + "/Data/LIF/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+            data_file = home + "/Data/integrate_and_fire/leaky_if/mu{:.2f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
                 mu, tau_a, 0, tau_n, Dn, 0)
             print(data_file)
             data = np.loadtxt(data_file)
@@ -122,25 +124,25 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
             for p1s_sim, p1s_theory, D in zip(p1s_sim_all, p1s_theory_all, Dws[0]):
                 ax_l.scatter(data_x, p1s_sim, ec="k", fc="w", s=10, zorder=2)
                 ax_l.plot(data_x, p1s_theory, c="k", ls="-", lw=1, zorder=1)
-            ax_l.scatter(data_x, p1s_adap_sim, ec="C0", fc="w", s=10, zorder=2)
-            ax_l.scatter(data_x_cnoise, p1s_cnoise_sim, ec="C1", fc="w", s=10, zorder=2)
-            ax_l.plot(data_x, p1s_adap_theory, ls="--", zorder=1, label="$\sigma=0$")
-            ax_l.plot(data_x_cnoise, p1s_cnoise_theory, ls="-.", zorder=1, label="$\Delta=0$")
+            ax_l.scatter(data_x, p1s_adap_sim, ec=colors.palette[3], fc="w", s=10, zorder=2)
+            ax_l.scatter(data_x_cnoise, p1s_cnoise_sim, ec=colors.palette[5], fc="w", s=10, zorder=2)
+            ax_l.plot(data_x, p1s_adap_theory, ls="--", c=colors.palette[3], zorder=1, label="$\sigma=0$")
+            ax_l.plot(data_x_cnoise, p1s_cnoise_theory, ls="-.", c=colors.palette[5], zorder=1, label="$\Delta=0$")
 
         if n == 1:
             for p1s_sim, p1s_theory, D in zip(p1s_sim_all, p1s_theory_all, Dws[1]):
                 ax_r.scatter(data_x, p1s_sim, ec="k", fc="w", s=10, zorder=2)
                 ax_r.plot(data_x, p1s_theory, c="k", ls="-", lw=1, zorder=1)
-            ax_r.scatter(data_x, p1s_adap_sim, ec="C0", fc="w", s=10, zorder=2)
-            ax_r.scatter(data_x_cnoise, p1s_cnoise_sim, ec="C1", fc="w", s=10, zorder=2)
-            ax_r.plot(data_x, p1s_adap_theory, ls="--", zorder=1)
-            ax_r.plot(data_x_cnoise, p1s_cnoise_theory, ls="-.", zorder=1)
+            ax_r.scatter(data_x, p1s_adap_sim, ec=colors.palette[3], fc="w", s=10, zorder=2)
+            ax_r.scatter(data_x_cnoise, p1s_cnoise_sim, ec=colors.palette[5], fc="w", s=10, zorder=2)
+            ax_r.plot(data_x, p1s_adap_theory, ls="--", c=colors.palette[3], zorder=1)
+            ax_r.plot(data_x_cnoise, p1s_cnoise_theory, ls="-.", c=colors.palette[5], zorder=1)
 
-    ax_l.text(50, -0.2, r"$\sigma = 0$", ha="center", fontsize=10, c="C0")
-    ax_l.text(0.5, 0.6, r"$\Delta = 0$", ha="center", fontsize=10, c="C1")
+    ax_l.text(50, -0.2, r"$\sigma = 0$", ha="center", fontsize=10, c=colors.palette[3])
+    ax_l.text(0.5, 0.6, r"$\Delta = 0$", ha="center", fontsize=10, c=colors.palette[5])
 
     ax_l.text(10, 0.7, r"$D=0$", ha="center", fontsize=10, rotation=30, c="k")
-    ax_l.text(20, 0.3, r"$D=0.01}$", ha="center", fontsize=10, rotation=20, c="k")
+    ax_l.text(20, 0.3, r"$D=0.01$", ha="center", fontsize=10, rotation=20, c="k")
     ax_l.text(40, 0.1, r"$D=0.05$", ha="center", fontsize=10, rotation=10, c="k")
 
     ax_r.text(10, 0.7, r"$D=0$", ha="center", fontsize=10, rotation=35, c="k")
@@ -150,7 +152,7 @@ def plot_channel_p1_lif(mus, deltas, sigma, Dws):
     ax_l.text(-0.2, 1.1, "A", size=12, transform=ax_l.transAxes)
     ax_r.text(-0.2, 1.1, "B", size=12, transform=ax_r.transAxes)
 
-    plt.savefig(home + "/Data/Plots/fig7.pdf", transparent=True)
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig7.pdf", dpi=300)
     plt.show()
     return 1
 

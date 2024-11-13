@@ -5,10 +5,12 @@ from utilites import functions as fc
 from utilites import plot_parameters as utl
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
+import styles as st
 
 def plt_special_cases():
     home = os.path.expanduser("~")
-
+    st.set_default_plot_style()
+    colors = st.Colors
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., 0.7))
     x0 = 0.12
     x1 = 0.05
@@ -39,9 +41,9 @@ def plt_special_cases():
     ax_lu.set_ylim([0, 1])
     ax_ru.set_ylim([0., 0.5])
     for ax in axins:
-        ax.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
+        ax.set_ylabel(r"$\rho_k$", fontsize=11)
         ax.set_xticks([1, 5])
-        ax.set_xlabel("$k$", fontsize=utl.fontsize)
+        #ax.set_xlabel("$k$", fontsize=11)
     for ax in axis:
         ax.grid(which='major', alpha=0.8, linestyle="--")
         ax.tick_params(which="both", direction='in', labelsize=utl.labelsize)
@@ -52,10 +54,10 @@ def plt_special_cases():
     ax_ld.set_ylim([-0.3, 0.5])
     ax_ld.set_xticks([0.001, 0.01, 0.1, 1])
     ax_rd.set_xticks([0.001, 0.01, 0.1, 1])
-    ax_lu.set_ylabel(r"$C_v$", fontsize=utl.fontsize)
-    ax_ld.set_ylabel(r"$\rho_1$", fontsize=utl.fontsize)
-    ax_ld.set_xlabel(r"$D$", fontsize=utl.fontsize)
-    ax_rd.set_xlabel(r"$\tau_\eta \sigma^2$", fontsize=utl.fontsize)
+    ax_lu.set_ylabel(r"$C_v$", fontsize=11)
+    ax_ld.set_ylabel(r"$\rho_1$", fontsize=11)
+    ax_ld.set_xlabel(r"$D$", fontsize=11)
+    ax_rd.set_xlabel(r"$\tau_\eta \sigma^2$", fontsize=11)
     ax_lu.xaxis.set_ticklabels([])
     ax_ru.xaxis.set_ticklabels([])
 
@@ -84,7 +86,7 @@ def plt_special_cases():
     cv_theory2 = []
 
     for n, Dw in enumerate(Dws):
-        data_file = home + "/Data/SCC/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+        data_file = home + "/Data/integrate_and_fire/generalized_if/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
             mu, beta_w, tau_w, tau_a, delta, tau_n, Dnf, Dw)
         # print(data_file)
         data = np.loadtxt(data_file)
@@ -112,7 +114,7 @@ def plt_special_cases():
 
     print("-----")
     for n, Dn in enumerate(Dns):
-        data_file = home + "/Data/SCC/GIF/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
+        data_file = home + "/Data/integrate_and_fire/generalized_if/mu{:.2f}_beta{:.1f}_tauw{:.1f}_taua{:.1f}_Delta{:.1f}_taun{:.3f}_Dn{:.2e}_Dw{:.2e}.txt".format(
             mu, beta_w, tau_w, tau_a, delta, tau_n, Dn, Dwf)
         data = np.loadtxt(data_file)
         t, a, eta, chi = np.transpose(data)
@@ -174,7 +176,7 @@ def plt_special_cases():
     ax_lu.text(-0.2, 1.1, "A", size=12, transform=ax_lu.transAxes)
     ax_ru.text(-0.2, 1.1, "B", size=12, transform=ax_ru.transAxes)
     ax_lu.legend(prop={"size": 7}, framealpha=1., edgecolor="k")
-    plt.savefig(home + "/Data/Plots/fig9.pdf")
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig9.png", dpi=300)
     plt.show()
 
 

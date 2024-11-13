@@ -8,6 +8,7 @@ from utilites import functions as fc
 from utilites import plot_parameters as utl
 from matplotlib.collections import LineCollection
 
+import styles as st
 
 def multiline(xs, ys, c, ax=None, **kwargs):
     """Plot lines with different colorings
@@ -49,9 +50,10 @@ def multiline(xs, ys, c, ax=None, **kwargs):
 
 if __name__ == "__main__":
     home = os.path.expanduser("~")
-    data = np.loadtxt(home + "/Data/Taub_miles/taubs_miles_adap_cnoise_I0.0_Dv0.10_Dn1.00.dat")
+    data = np.loadtxt(home + "/Data/conductance_based/traub_miles/taubs_miles_adap_cnoise_I0.0_Dv0.10_Dn1.00.dat")
     v, a, eta, n, m, h, Ia, t = np.transpose(data)
-
+    st.set_default_plot_style()
+    colors = st.Colors
     fig = plt.figure(tight_layout=True, figsize=utl.adjust_plotsize(1., 0.5))
     gs = gs.GridSpec(5, 2)
     ax1 = fig.add_subplot(gs[0:2, 0])
@@ -80,7 +82,7 @@ if __name__ == "__main__":
     Delta = tau_a * a_fix * (1. - np.exp(-ISI / tau_a))
     print(a_fix)
 
-    ax1.plot(t, a, lw=1, c="k")
+    ax1.plot(t, a, lw=1, c=colors.palette[3])
     ax1.axhline(z_fix, ls=":", c="k")
 
     ax1.set_xlim([0, 110])
@@ -94,7 +96,7 @@ if __name__ == "__main__":
 
     # inset axes....
     axins = ax1.inset_axes([0.05, 0.3, 0.4, 0.6])
-    axins.plot(t, a, lw=1, c="k")
+    axins.plot(t, a, lw=1, c=colors.palette[3])
     # sub region of the original image
     x1, x2, y1, y2 = 83, 101, 0.016, 0.024
     axins.set_xlim(x1, x2)
@@ -103,7 +105,7 @@ if __name__ == "__main__":
     axins.set_yticks([])
     ax1.indicate_inset_zoom(axins, edgecolor="k", alpha=1.)
 
-    ax2.plot(t, v, lw=1, c="k")
+    ax2.plot(t, v, lw=1, c=colors.palette[1])
     ax2.plot([0, 25, 25, 200], [-99, -99, -80, -80], c="C3")
 
     ax2.set_ylabel("$V$ [mV]")
@@ -114,7 +116,7 @@ if __name__ == "__main__":
     ax2.grid(which='major', alpha=0.8, linestyle="--")
     ax2.tick_params(which="both", direction='in', labelsize=utl.labelsize)
 
-    data = np.loadtxt(home + "/Data/Taub_miles/taubs_miles_adap_cnoise_I0.0_Dv0.00_Dn0.00.dat")
+    data = np.loadtxt(home + "/Data/conductance_based/traub_miles/taubs_miles_adap_cnoise_I0.0_Dv0.00_Dn0.00.dat")
     v_det, a_det, eta_det, n, m, h, Ia_det, t_det = np.transpose(data)
     v_det_plot = v_det[900000:920000]
     a_det_plot = a_det[900000:920000]
@@ -122,11 +124,11 @@ if __name__ == "__main__":
 
     v_plot = v[850000:870000]
     a_plot = a[850000:870000]
-    ax3.plot(v_plot, a_plot, c="C0")
+    ax3.plot(v_plot, a_plot, c=colors.palette[1])
     ax3.grid(which='major', alpha=0.8, linestyle="--")
     ax3.tick_params(which="both", direction='in', labelsize=utl.labelsize)
     ax3.set_xlabel("$V$ [mV]")
     ax3.set_ylabel("$z$")
 
-    plt.savefig(home + "/Data/Plots/fig10.pdf")
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig10.png", dpi=300)
     plt.show()

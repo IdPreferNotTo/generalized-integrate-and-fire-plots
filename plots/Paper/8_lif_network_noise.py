@@ -9,6 +9,7 @@ from utilites import plot_parameters as utl
 from scipy import integrate
 import cmath
 
+import styles as st
 
 def LIF_gnoise_scc(t_det, mu, tau_a, delta, tau_n, bn, bw, k):
     if tau_a == 0:
@@ -108,7 +109,8 @@ def slice(data, n):
 
 def plt_scc_lif(bn, bv):
     home = os.path.expanduser('~')
-
+    st.set_default_plot_style()
+    colors = st.Colors
     f = plt.figure(1, figsize=utl.adjust_plotsize(1., ratio=0.8))
     x0 = 0.12  # left
     x1 = 0.1  # right
@@ -122,8 +124,7 @@ def plt_scc_lif(bn, bv):
     height = (1 - h_spacer - y0 - y1) / 2
     ax_ps = f.add_axes([x0, y0 + height + h_spacer, width, height])  # top left
     ax_scc_tau = f.add_axes([x0 + width + w_spacer, y0 + height + h_spacer, width, height])  # top right
-    ax_no_adap_network = f.add_axes([x0, y0, width, height/2 - 0.01])  # bottom left
-    ax_no_adap = f.add_axes([x0, y0 + height/2 + 0.01, width, height/2 - 0.01])
+    ax_no_adap = f.add_axes([x0, y0, width, height])  # bottom left
     ax_weak_adap = f.add_axes([x0 + width + w_spacer, y0, width, height])  # bottom right
     ax_cbar = f.add_axes(
         [x0 + width + width + w_spacer + w_spacer_cbar, y0 + height / 3, width_cbar, 1. - y0 - y1 - 2 * height / 3])
@@ -132,53 +133,42 @@ def plt_scc_lif(bn, bv):
     ax_ps.tick_params(which="both", direction='in', labelsize=utl.labelsize)
     ax_ps.set_xlim([0.01, 100])
     ax_ps.set_xticks([0.1, 1, 10.])
-    # ax_ps.set_ylim([0., 0.05])
-    # ax_ps.set_yticks([0., 0.02, 0.04])
     ax_ps.grid(which='major', alpha=0.8, linestyle="--")
-    ax_ps.set_ylabel(r"$S_{\zeta\zeta}$", fontsize=utl.fontsize)
+    ax_ps.set_ylabel(r"$S_{\zeta\zeta}$", fontsize=11)
     ax_ps.set_xlabel("$\omega T^*$")
 
     ax_scc_tau.set_xscale("log")
-    ax_scc_tau.set_ylabel(r"$\rho_1$", fontsize=utl.fontsize)
-    ax_scc_tau.set_xlabel(r"$\tau_\eta / T^*$", fontsize=utl.fontsize)
+    ax_scc_tau.set_ylabel(r"$\rho_1$", fontsize=11)
+    ax_scc_tau.set_xlabel(r"$\tau_\eta / T^*$", fontsize=11)
     ax_scc_tau.grid(which='major', alpha=0.8, linestyle="--")
     ax_scc_tau.tick_params(which="both", direction='in', labelsize=utl.labelsize)
     ax_scc_tau.set_ylim(-0.65, 0.05)
     ax_scc_tau.set_yticks([-0.6, -0.4, -0.2, 0.0])
     ax_scc_tau.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
 
+    ax_no_adap.set_xlabel("$k$", fontsize=11)
     ax_no_adap.grid(which='major', alpha=0.8, linestyle="--")
     ax_no_adap.tick_params(direction='in', labelsize=utl.labelsize)
     ax_no_adap.set_xticks([1, 2, 3, 4, 5])
-    ax_no_adap.set_xticklabels([])
-    ax_no_adap.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
-    ax_no_adap.set_ylim(-0.2, 0.05)
-    ax_no_adap.set_yticks([-0.2, -0.1, 0.0])
+    ax_no_adap.set_ylabel(r"$\rho_k$", fontsize=11)
+    ax_no_adap.set_ylim(-0.4, 0.05)
+    ax_no_adap.set_yticks([-0.4, -0.3, -0.2, -0.1, 0.0])
     ax_no_adap.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
-
-    ax_no_adap_network.set_xlabel("$k$", fontsize=utl.fontsize)
-    ax_no_adap_network.grid(which='major', alpha=0.8, linestyle="--")
-    ax_no_adap_network.tick_params(direction='in', labelsize=utl.labelsize)
-    ax_no_adap_network.set_xticks([1, 2, 3, 4, 5])
-    ax_no_adap_network.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
-    ax_no_adap_network.set_ylim(-0.2, 0.05)
-    ax_no_adap_network.set_yticks([-0.2, -0.1, 0.0])
-    ax_no_adap_network.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
 
     ax_weak_adap.grid(which='major', alpha=0.8, linestyle="--")
     ax_weak_adap.tick_params(direction='in', labelsize=utl.labelsize)
-    ax_weak_adap.set_xlabel("$k$", fontsize=utl.fontsize)
+    ax_weak_adap.set_xlabel("$k$", fontsize=11)
     ax_weak_adap.set_xticks([1, 2, 3, 4, 5])
     ax_weak_adap.set_ylim(-0.4, 0.05)
 
-    ax_weak_adap.set_ylabel(r"$\rho_k$", fontsize=utl.fontsize)
+    ax_weak_adap.set_ylabel(r"$\rho_k$", fontsize=11)
     ax_weak_adap.set_ylim(-0.4, 0.05)
     ax_weak_adap.set_yticks([-0.4, -0.3, -0.2, -0.1, 0.0])
     ax_weak_adap.axhline(0, xmin=0, xmax=6, ls="--", c="C7", zorder=1)
 
     ax_ps.text(-0.2, 1.1, "A", size=12, transform=ax_ps.transAxes)
     ax_scc_tau.text(-0.2, 1.1, "B", size=12, transform=ax_scc_tau.transAxes)
-    ax_no_adap.text(-0.2, 1.2, "C", size=12, transform=ax_no_adap.transAxes)
+    ax_no_adap.text(-0.2, 1.1, "C", size=12, transform=ax_no_adap.transAxes)
     ax_weak_adap.text(-0.2, 1.1, "D", size=12, transform=ax_weak_adap.transAxes)
 
     t_ratios = [0.1, 1, 10]
@@ -190,7 +180,7 @@ def plt_scc_lif(bn, bv):
     s_map = cm.ScalarMappable(norm=normalize, cmap=colormap)
     s_map.set_array(colorparams)
 
-    ax_cbar.set_title(r"$\tau_\eta / T^*$", fontsize=utl.fontsize)
+    ax_cbar.set_title(r"$\tau_\eta / T^*$", fontsize=11)
     cbar1 = f.colorbar(s_map, cax=ax_cbar, format='%.2f')
     cbar1.set_ticks(colorparams)
     ax_cbar.set_yticklabels([r'$10^{{{:.0f}}}$'.format(np.log(exp) / np.log(10)) for exp in t_ratios])
@@ -212,7 +202,7 @@ def plt_scc_lif(bn, bv):
     tau_correlations_weak_adap_the = []
 
     for taun_no_adap, taun_weak_adap in zip(taus_no_adap, taus_weak_adap):
-        data_no_adap = home + "/CLionProjects/PhD/lif_green_noise/out/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
+        data_no_adap = home + "/Data/integrate_and_fire/leaky_if_network_noise/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
             taua, delta_no_adap, bv, bn, taun_no_adap)
         isis_no_adap = np.loadtxt(data_no_adap)
         covar_no_adap_the = LIF_gnoise_scc(T_no_adap, mu, taua, delta_no_adap, taun_no_adap, bn, bv, 1)
@@ -222,7 +212,7 @@ def plt_scc_lif(bn, bv):
         covar_no_adap_sim = fc.k_corr(isis_no_adap, isis_no_adap, 1)
         tau_correlations_no_adap_sim.append(covar_no_adap_sim / var_no_adap_sim)
 
-        data_weak_adap = home + "/CLionProjects/PhD/lif_green_noise/out/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
+        data_weak_adap = home + "/Data/integrate_and_fire/leaky_if_network_noise//lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
             taua, delta_weak_adap, bv, bn, taun_weak_adap)
         isis_weak_adap = np.loadtxt(data_weak_adap)
         covar_weak_adap_the = LIF_gnoise_scc(T_weak_adap, mu, taua, delta_weak_adap, taun_weak_adap, bn, bv, 1)
@@ -242,7 +232,7 @@ def plt_scc_lif(bn, bv):
                        label="with adaptation", zorder=3.)
     ax_scc_tau.plot(ratios, tau_correlations_weak_adap_the, color="k", lw=1., zorder=2.)
 
-    ax_scc_tau.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
+    ax_scc_tau.legend(fancybox=False, prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg_scc_tau = ax_scc_tau.get_legend()
     leg_scc_tau.get_frame().set_linewidth(0.5)
     leg_scc_tau.legendHandles[0].set_color('k')
@@ -250,7 +240,7 @@ def plt_scc_lif(bn, bv):
 
     tauns = [0.02231, 0.2231, 2.231]
     for n, taun in enumerate(tauns):
-        data_file = home + "/CLionProjects/PhD/lif_green_noise/out/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
+        data_file = home + "/Data/integrate_and_fire/leaky_if_network_noise/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
             taua, delta_no_adap, bv, bn, taun)
         isis = np.loadtxt(data_file)
         t_mean = np.mean(isis)
@@ -281,36 +271,12 @@ def plt_scc_lif(bn, bv):
         # POWER SPECTRUM FROM THEORY
         ws = np.logspace(-2, 3, 50)
 
-        data_file_eta = home + "/CLionProjects/PhD/lif_green_noise/out/eta_lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
-            taua, delta_no_adap, bv, bn, taun)
-        # etas = np.loadtxt(data_file_eta)
-        """
-        taus, corrs = correlation_function(etas, 0.01)
-        Sws_sim = []
-        for w in ws:
-            Sw_sim = fouriertransformation(w, corrs, 0.01)
-            Sws_sim.append(Sw_sim)
-
-
-        Sws_sim = []
-        for w in ws:
-            fs = []
-            for xs in slice(etas , 1_000):
-                f = fouriertransformation(w, xs, 0.01)
-                fs.append(f)
-            var = 0
-            for f in fs:
-                var += np.real(f)**2 + np.imag(f)**2
-            Sw = var/10.
-            Sws_sim.append(Sw)
-        """
         Sfs = [bv ** 2 + (2 * bn * bv + bn ** 2) / (1. + (taun * w) ** 2) for w in ws]
         ax_ps.plot([w * 0.223 for w in ws], Sfs, c=color, lw=1)
-        # ax_ps.plot(ws, Sws_sim, color="k", lw=1.)
 
     tauns = [0.06652, 0.6652, 6.652]
     for n, taun in enumerate(tauns):
-        data_file = home + "/CLionProjects/PhD/lif_green_noise/out/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
+        data_file = home + "/Data/integrate_and_fire/leaky_if_network_noise/lif_green_noise_taua{:.2f}_delta{:.2f}_bv{:.2f}_bn{:.2f}_taun{:.2f}.dat".format(
             taua, delta_weak_adap, bv, bn, taun)
         isis = np.loadtxt(data_file)
         t_mean = np.mean(isis)
@@ -339,54 +305,16 @@ def plt_scc_lif(bn, bv):
             ax_weak_adap.scatter(ks, k_correlations, color=color, marker="^", s=15, edgecolors="k", lw=1, zorder=3)
             ax_weak_adap.plot(ks, k_correlations_theory, color=color, zorder=2, lw=1)
 
-    ax_weak_adap.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
+    ax_weak_adap.legend(fancybox=False, prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
     leg = ax_weak_adap.get_legend()
     leg.get_frame().set_linewidth(0.5)
     leg.legendHandles[0].set_color('k')
     leg.legendHandles[1].set_color('k')
 
-    ax_weak_adap.set_title("with adaptation", fontsize=utl.fontsize)
-    ax_no_adap.set_title("without adaptation", fontsize=utl.fontsize)
+    ax_weak_adap.set_title("with adaptation", fontsize=11)
+    ax_no_adap.set_title("without adaptation", fontsize=11)
 
-    # add line for experimental data to fig c
-
-    file = home + "/Desktop/spike.npy"
-    data = np.load(file, allow_pickle=True)
-
-    isis_per_neuron = []
-    for spike_times in data:
-        t_tmp = 0
-        isis = []
-        for t in spike_times:
-            isi = t - t_tmp
-            isis.append(isi)
-            t_tmp = t
-        isis_per_neuron.append(list(isis))
-
-    ks = np.arange(1, 6)
-    k_correlations = [[], [], [], [], []]
-    for isis in isis_per_neuron:
-        var = fc.k_corr(isis, isis, 0)
-        for k in ks:
-            covar = fc.k_corr(isis, isis, k)
-            k_correlations[k - 1].append(covar / var)
-    k_mean_correlations = []
-    for correlations in k_correlations:
-        k_mean_correlations.append(np.mean(correlations))
-    ax_no_adap_network.scatter(ks, k_mean_correlations, color="C3", s=20, edgecolors="k", lw=1, zorder=3, label="Network sim.")
-
-    #k_correlations_theory = []
-    #for k in ks:
-    #    k_corr = LIF_gnoise_scc(1, mu, taua, delta_no_adap, 1/np.pi, bn, bv, k)
-    #    k_correlations_theory.append(k_corr)
-    #ax_no_adap_network.plot(ks, k_correlations_theory, color="k", zorder=2, lw=1, label=r"theory $\tau_\eta = \pi^{-1}$")
-
-    ax_no_adap_network.legend(prop={"size": 7}, loc=4, ncol=1, framealpha=1., edgecolor="k")
-    leg = ax_no_adap_network.get_legend()
-    leg.get_frame().set_linewidth(0.5)
-
-
-    plt.savefig(home + "/Data/SCC/Plots_paper/8.1_lif_network_noise_high_cv.pdf")
+    plt.savefig(home + "/Desktop/bccn_conference_plots/fig8.png", dpi=300)
     plt.show()
 
 
